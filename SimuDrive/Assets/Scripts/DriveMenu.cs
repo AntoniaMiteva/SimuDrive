@@ -9,4 +9,9 @@ public class DriveMenu : MonoBehaviour
     {
         SceneManager.LoadScene("Main Menu");
     }
+
+    public void StartUpButton()
+    {
+        SceneManager.LoadScene("StartDriveScene");
+    }
 }
