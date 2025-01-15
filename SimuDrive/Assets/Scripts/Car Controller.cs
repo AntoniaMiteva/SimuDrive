@@ -16,6 +16,8 @@ public class CarController : MonoBehaviour
 
     private int gear = 0;
     private bool isGear = false;
+    private bool isStart = false;
+    private bool isDrive = false;
 
     [SerializeField] private float motorForce = 0; //shte se promenq ot gears
     [SerializeField] private float breakForce;
@@ -35,22 +37,36 @@ public class CarController : MonoBehaviour
     private void FixedUpdate()
     {
         GetInput();
+        IsStarting();
+        IsDriving();
         HandleMotor();
         HandleSteering();
         UpdateWheels();
         UpdateGear();
-
-        /*
-        if (frontLeftWheelColider.motorTorque == 0 && frontRightWheelColider.motorTorque==0)
-        {
-            IsStarting();
-        }*/
     }
 
     private void IsStarting()
     {
-        throw new NotImplementedException();
+        if (isGear && gear == 1 && (verticalInput != 0 || horizontalInput != 0))
+        {
+            isStart = true;
+            isDrive = true; 
+        }
     }
+
+    private void IsDriving()
+    {
+        // Check if the car is in motion and allow continuous driving
+        if (isStart && (Mathf.Abs(verticalInput) > 0 || Mathf.Abs(horizontalInput) > 0))
+        {
+            isDrive = true;
+        }
+        else if (Mathf.Abs(verticalInput) == 0 && Mathf.Abs(horizontalInput) == 0)
+        {
+            isDrive = false; // Stop driving if no input
+        }
+    }
+
 
     private void UpdateGear()
     {
@@ -58,16 +74,26 @@ public class CarController : MonoBehaviour
         if (isGear && Input.GetKey(KeyCode.Alpha1))
         {
             gear = 1;
-            motorForce = 10;
+            motorForce = 30;
             Debug.Log("gear 1");
+        }
+        else if(isGear  && Input.GetKey(KeyCode.Alpha2))
+        {
+            gear = 2;
+            motorForce = 60;
+            Debug.Log("gear 2");
         }
     }
 
 
     private void HandleMotor()
     {
-        frontLeftWheelColider.motorTorque = verticalInput * motorForce;
-        frontRightWheelColider.motorTorque = verticalInput * motorForce;
+        if (isStart)
+        {
+            frontLeftWheelColider.motorTorque = verticalInput * motorForce;
+            frontRightWheelColider.motorTorque = verticalInput * motorForce;
+        }
+        
         cureenrBreakForce = isBreaking ? breakForce : 0f;
         if(isBreaking)
         {
