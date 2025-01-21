@@ -21,6 +21,10 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("Options Menu");
     }
 
+    public void FlyersButton()
+    {
+        SceneManager.LoadScene("Flyers Menu");
+    }
     //Quit Game
     public void QuitButton()
     {

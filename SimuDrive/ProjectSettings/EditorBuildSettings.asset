@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Instructions Menu.unity
     guid: 342e4dd50f08e8e47aeac2ef5b9fa3b3
   - enabled: 1
+    path: Assets/Scenes/Flyers Menu.unity
+    guid: 25ca98d32e539074f85819ac4f62c5e5
+  - enabled: 1
     path: Assets/Scenes/Options Menu.unity
     guid: 2ff689b1f045ebf46b81d674464c63ea
   - enabled: 1

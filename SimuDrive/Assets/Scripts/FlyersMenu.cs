@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class DriveMenu : MonoBehaviour
+public class FlyersMenu : MonoBehaviour
 {
     public void BackButton()
     {
         SceneManager.LoadScene("Main Menu");
     }
+    
 
-    public void StartUpButton()
-    {
-        SceneManager.LoadScene("StartDriveScene");
-    }
 }
