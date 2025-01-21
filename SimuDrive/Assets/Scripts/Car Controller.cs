@@ -19,6 +19,10 @@ public class CarController : MonoBehaviour
     private bool isStart = false;
     private bool isDrive = false;
 
+    [SerializeField] private Rigidbody carRigidbody; // Assign this in the Inspector
+    private float speed;
+
+
     [SerializeField] private float motorForce = 0; //shte se promenq ot gears
     [SerializeField] private float breakForce;
     [SerializeField] private float maxSteerAngle;
@@ -33,39 +37,79 @@ public class CarController : MonoBehaviour
     [SerializeField] private Transform backLeftWheelTransform;
     [SerializeField] private Transform backRightWheelTransform;
 
+    private float timer;
+    private float holdDur = 3f;
+
+    private void Start()
+    {
+        carRigidbody.centerOfMass = new Vector3(0, -0.5f, 0); // Adjust Y to lower
+        ConfigureFriction(frontLeftWheelColider);
+        ConfigureFriction(frontRightWheelColider);
+        ConfigureFriction(backLeftWheelColider);
+        ConfigureFriction(backRightWheelColider);
+    }
 
     private void FixedUpdate()
     {
         GetInput();
-        IsStarting();
-        IsDriving();
-        HandleMotor();
-        HandleSteering();
-        UpdateWheels();
-        UpdateGear();
+        UpdateGear(); // Update gear first
+        IsStarting(); // Check if the car should start
+        IsDriving();  // Check if the car should continue driving
+        HandleMotor(); // Apply motor force based on inputs
+        HandleSteering(); // Handle steering
+        UpdateWheels(); // Update visual wheel positions
+        CalculateSpeed(); // Calculate and log speed
+        Debug.Log("Speed: " + speed + " km/h");
+    }
+
+
+
+    private void CalculateSpeed()
+    {
+        speed = carRigidbody.linearVelocity.magnitude * 3.6f; // Convert m/s to km/h
+    }
+
+    private void ConfigureFriction(WheelCollider wheelCollider)
+    {
+        WheelFrictionCurve forwardFriction = wheelCollider.forwardFriction;
+        forwardFriction.stiffness = 1.5f; // Adjust as needed
+        wheelCollider.forwardFriction = forwardFriction;
+
+        WheelFrictionCurve sidewaysFriction = wheelCollider.sidewaysFriction;
+        sidewaysFriction.stiffness = 2.0f; // Adjust as needed
+        wheelCollider.sidewaysFriction = sidewaysFriction;
     }
 
     private void IsStarting()
     {
-        if (isGear && gear == 1 && (verticalInput != 0 || horizontalInput != 0))
+        // Require Shift to start moving if the car is stationary (speed <= 0)
+        if (isGear && !isDrive && gear == 1 && carRigidbody.linearVelocity.magnitude <= 0.1f &&
+            (verticalInput != 0 || horizontalInput != 0))
         {
             isStart = true;
-            isDrive = true; 
+            isDrive = true;
+            Debug.Log("Car started moving.");
         }
     }
 
+
+
+
     private void IsDriving()
     {
-        // Check if the car is in motion and allow continuous driving
         if (isStart && (Mathf.Abs(verticalInput) > 0 || Mathf.Abs(horizontalInput) > 0))
         {
-            isDrive = true;
+            isDrive = true; // Keep driving
         }
         else if (Mathf.Abs(verticalInput) == 0 && Mathf.Abs(horizontalInput) == 0)
         {
             isDrive = false; // Stop driving if no input
+            isStart = false; // Require Shift to restart after stopping
+            Debug.Log("Car stopped.");
         }
     }
+
+
 
 
     private void UpdateGear()
@@ -74,30 +118,77 @@ public class CarController : MonoBehaviour
         if (isGear && Input.GetKey(KeyCode.Alpha1))
         {
             gear = 1;
-            motorForce = 30;
+            motorForce = 80;
             Debug.Log("gear 1");
         }
-        else if(isGear  && Input.GetKey(KeyCode.Alpha2))
+        else if (isGear && Input.GetKey(KeyCode.Alpha2))
         {
             gear = 2;
-            motorForce = 60;
+            motorForce = 200;
             Debug.Log("gear 2");
+        }
+        else if (isGear && Input.GetKey(KeyCode.Alpha3))
+        {
+            gear = 3;
+            motorForce = 400;
+            Debug.Log("gear 3");
+        }
+        else if (isGear && Input.GetKey(KeyCode.Alpha4))
+        {
+            gear = 4;
+            motorForce = 600;
+            Debug.Log("gear 4");
+        }
+        else if (isGear && Input.GetKey(KeyCode.Alpha5))
+        {
+            gear = 5;
+            motorForce = 800;
+            Debug.Log("gear 5");
+        }
+        else if (isGear && Input.GetKey(KeyCode.R))
+        {
+            gear = 6;
+            motorForce = -80;
+            Debug.Log("gear 6");
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            timer = Time.time;
+        }
+        else if (Input.GetKey(KeyCode.LeftShift))
+        {
+            if (Time.time - timer > holdDur)
+            {
+                timer -= float.PositiveInfinity;
+            }
+        }
+        else
+        {
+            timer = float.PositiveInfinity;
         }
     }
 
 
+
     private void HandleMotor()
     {
-        if (isStart)
+        if (isStart && isDrive)
         {
             frontLeftWheelColider.motorTorque = verticalInput * motorForce;
             frontRightWheelColider.motorTorque = verticalInput * motorForce;
         }
-        
+
+        // Update braking force
         cureenrBreakForce = isBreaking ? breakForce : 0f;
-        if(isBreaking)
+
+        if (isBreaking)
         {
             ApplyBreaking();
+        }
+        else
+        {
+            ReleaseBrakes();
         }
     }
 
@@ -109,6 +200,14 @@ public class CarController : MonoBehaviour
         backRightWheelColider.brakeTorque = cureenrBreakForce;
     }
 
+    private void ReleaseBrakes()
+    {
+        frontLeftWheelColider.brakeTorque = 0f;
+        frontRightWheelColider.brakeTorque = 0f;
+        backLeftWheelColider.brakeTorque = 0f;
+        backRightWheelColider.brakeTorque = 0f;
+    }
+
     private void GetInput()
     {
         horizontalInput = Input.GetAxis(HORIZONTAL);
@@ -118,10 +217,12 @@ public class CarController : MonoBehaviour
 
     private void HandleSteering()
     {
-        currentSteerAngle = maxSteerAngle*horizontalInput;
+        float targetSteerAngle = maxSteerAngle * horizontalInput;
+        currentSteerAngle = Mathf.Lerp(currentSteerAngle, targetSteerAngle, Time.fixedDeltaTime * 5f);
         frontLeftWheelColider.steerAngle = currentSteerAngle;
         frontRightWheelColider.steerAngle = currentSteerAngle;
     }
+
 
     private void UpdateWheels()
     {
