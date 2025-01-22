@@ -59,7 +59,7 @@ public class CarController : MonoBehaviour
         HandleSteering(); // Handle steering
         UpdateWheels(); // Update visual wheel positions
         CalculateSpeed(); // Calculate and log speed
-        Debug.Log("Speed: " + speed + " km/h");
+        Debug.Log("Speed: " + speed + " km/h " + gear);
     }
 
 
@@ -83,7 +83,7 @@ public class CarController : MonoBehaviour
     private void IsStarting()
     {
         // Require Shift to start moving if the car is stationary (speed <= 0)
-        if (isGear && !isDrive && gear == 1 && carRigidbody.linearVelocity.magnitude <= 0.1f &&
+        if (isGear && !isDrive && (gear == 1 || gear == -1) && carRigidbody.linearVelocity.magnitude <= 0.1f &&
             (verticalInput != 0 || horizontalInput != 0))
         {
             isStart = true;
@@ -147,9 +147,9 @@ public class CarController : MonoBehaviour
         }
         else if (isGear && Input.GetKey(KeyCode.R))
         {
-            gear = 6;
+            gear = -1;
             motorForce = -80;
-            Debug.Log("gear 6");
+            Debug.Log("Reverse gear");
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
