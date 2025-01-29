@@ -1,0 +1,74 @@
+{
+    "name": "SteeringWheelInputs",
+    "maps": [
+        {
+            "name": "DrivingControls",
+            "id": "200bf6f7-bc4b-48ab-8ba4-38711ff5ede3",
+            "actions": [
+                {
+                    "name": "Steering",
+                    "type": "Value",
+                    "id": "6612a484-fa56-4ebd-88f2-0fadd540bc10",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Throttle",
+                    "type": "Value",
+                    "id": "957b0b2a-9bc5-4ad3-bbf3-8d59933928ab",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Break",
+                    "type": "Value",
+                    "id": "358c7cf8-e675-4f4a-9034-2f562a226ed9",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "1b872632-573a-4cb0-af0e-0b95430da8f1",
+                    "path": "<Joystick>/stick/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Steering",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a967cd50-28b5-4f9b-b24e-3393ce5d536f",
+                    "path": "<Joystick>/stick/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Throttle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "821831a8-1e15-4264-867b-7af574dbdd3f",
+                    "path": "<Joystick>/stick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Break",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
