@@ -40,6 +40,11 @@ public class CarController : MonoBehaviour
     private float timer;
     private float holdDur = 3f;
 
+
+    [SerializeField] private float maxRPM = 7000f;
+    [SerializeField] private float minRPM = 1000f;
+    private float currentRPM;
+
     private void Start()
     {
         carRigidbody.centerOfMass = new Vector3(0, -0.5f, 0); // Adjust Y to lower
@@ -83,7 +88,7 @@ public class CarController : MonoBehaviour
     private void IsStarting()
     {
         // Require Shift to start moving if the car is stationary (speed <= 0)
-        if (isGear && !isDrive && (gear == 1 || gear == -1) && carRigidbody.linearVelocity.magnitude <= 0.1f &&
+        if (Input.GetKey(KeyCode.LeftShift) && !isDrive && (gear == 1 || gear == -1) && carRigidbody.linearVelocity.magnitude <= 0.1f &&
             (verticalInput != 0 || horizontalInput != 0))
         {
             isStart = true;
@@ -97,75 +102,69 @@ public class CarController : MonoBehaviour
 
     private void IsDriving()
     {
-        if (isStart && (Mathf.Abs(verticalInput) > 0 || Mathf.Abs(horizontalInput) > 0))
+        if (isStart && Mathf.Abs(verticalInput) > 0)
         {
-            isDrive = true; // Keep driving
+            isDrive = true; // Keep driving as long as there's input
         }
-        else if (Mathf.Abs(verticalInput) == 0 && Mathf.Abs(horizontalInput) == 0)
+        else if (speed < 0.1f && Mathf.Abs(verticalInput) == 0)
         {
-            isDrive = false; // Stop driving if no input
-            isStart = false; // Require Shift to restart after stopping
+            isDrive = false; // Only stop driving when completely stopped and no input
             Debug.Log("Car stopped.");
         }
     }
 
+    private void CalculateRPM()
+    {
+        float speedFactor = speed / 100f; // Normalize speed
+        currentRPM = Mathf.Lerp(minRPM, maxRPM, speedFactor);
+
+        // Prevent RPM from exceeding limits
+        currentRPM = Mathf.Clamp(currentRPM, minRPM, maxRPM);
+    }
 
 
 
     private void UpdateGear()
     {
-        isGear = Input.GetKey(KeyCode.LeftShift);
-        if (isGear && Input.GetKey(KeyCode.Alpha1))
+        // Only allow gear changes if Shift is pressed
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            gear = 1;
-            motorForce = 80;
-            Debug.Log("gear 1");
-        }
-        else if (isGear && Input.GetKey(KeyCode.Alpha2))
-        {
-            gear = 2;
-            motorForce = 200;
-            Debug.Log("gear 2");
-        }
-        else if (isGear && Input.GetKey(KeyCode.Alpha3))
-        {
-            gear = 3;
-            motorForce = 400;
-            Debug.Log("gear 3");
-        }
-        else if (isGear && Input.GetKey(KeyCode.Alpha4))
-        {
-            gear = 4;
-            motorForce = 600;
-            Debug.Log("gear 4");
-        }
-        else if (isGear && Input.GetKey(KeyCode.Alpha5))
-        {
-            gear = 5;
-            motorForce = 800;
-            Debug.Log("gear 5");
-        }
-        else if (isGear && Input.GetKey(KeyCode.R))
-        {
-            gear = -1;
-            motorForce = -80;
-            Debug.Log("Reverse gear");
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            timer = Time.time;
-        }
-        else if (Input.GetKey(KeyCode.LeftShift))
-        {
-            if (Time.time - timer > holdDur)
+            if (Input.GetKeyDown(KeyCode.Alpha1) && speed < 20f)
             {
-                timer -= float.PositiveInfinity;
+                gear = 1;
+                motorForce = 100;
+                Debug.Log("Gear 1");
             }
-        }
-        else
-        {
-            timer = float.PositiveInfinity;
+            else if (Input.GetKeyDown(KeyCode.Alpha2) && speed >= 10f && speed < 40f)
+            {
+                gear = 2;
+                motorForce = 250;
+                Debug.Log("Gear 2");
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3) && speed >= 40f && speed < 60f)
+            {
+                gear = 3;
+                motorForce = 500;
+                Debug.Log("Gear 3");
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha4) && speed >= 60f && speed < 80f)
+            {
+                gear = 4;
+                motorForce = 700;
+                Debug.Log("Gear 4");
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha5) && speed >= 80f)
+            {
+                gear = 5;
+                motorForce = 1000;
+                Debug.Log("Gear 5");
+            }
+            else if (Input.GetKeyDown(KeyCode.R) && speed <= 5f)
+            {
+                gear = -1;
+                motorForce = -100;
+                Debug.Log("Reverse gear");
+            }
         }
     }
 
