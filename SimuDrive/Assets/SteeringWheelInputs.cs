@@ -28,27 +28,36 @@ public partial class @SteeringWheelInputs: IInputActionCollection2, IDisposable
             ""id"": ""200bf6f7-bc4b-48ab-8ba4-38711ff5ede3"",
             ""actions"": [
                 {
-                    ""name"": ""Steering"",
+                    ""name"": ""SteeringWheel"",
                     ""type"": ""Value"",
-                    ""id"": ""6612a484-fa56-4ebd-88f2-0fadd540bc10"",
+                    ""id"": ""62bffd6d-8aa5-40a7-b6a2-14a146b8e373"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Throttle"",
+                    ""name"": ""Accelerator"",
                     ""type"": ""Value"",
-                    ""id"": ""957b0b2a-9bc5-4ad3-bbf3-8d59933928ab"",
+                    ""id"": ""8e31ec52-ec27-4a14-8e6a-dfe18a4359de"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Break"",
+                    ""name"": ""Breake"",
                     ""type"": ""Value"",
-                    ""id"": ""358c7cf8-e675-4f4a-9034-2f562a226ed9"",
+                    ""id"": ""c21f5548-9db7-4dc1-aa3c-d24e5f41b360"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Clutch"",
+                    ""type"": ""Value"",
+                    ""id"": ""16a8546a-53f2-466b-b8b5-39b824af0ced"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -58,34 +67,73 @@ public partial class @SteeringWheelInputs: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""1b872632-573a-4cb0-af0e-0b95430da8f1"",
-                    ""path"": ""<Joystick>/stick/x"",
+                    ""id"": ""07ce96f5-c1c4-42cd-862b-4a1606ec937c"",
+                    ""path"": ""<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/hat/x"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Steering"",
+                    ""action"": ""SteeringWheel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a967cd50-28b5-4f9b-b24e-3393ce5d536f"",
-                    ""path"": ""<Joystick>/stick/y"",
+                    ""id"": ""3f911ef5-1786-4226-8e90-656bc2976e50"",
+                    ""path"": ""<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/hat/y"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Throttle"",
+                    ""action"": ""Accelerator"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""821831a8-1e15-4264-867b-7af574dbdd3f"",
-                    ""path"": ""<Joystick>/stick"",
+                    ""id"": ""1db65216-9fcc-4a29-b9af-d0c8e89f2963"",
+                    ""path"": ""<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/rz"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Break"",
+                    ""action"": ""Breake"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5245362e-f3bd-4cc2-afde-48038ff8085d"",
+                    ""path"": ""<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Clutch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""GearShifter"",
+            ""id"": ""291630b3-eb3f-4eec-98e6-00eb91d15720"",
+            ""actions"": [
+                {
+                    ""name"": ""Gear1"",
+                    ""type"": ""Button"",
+                    ""id"": ""4b892370-0c69-486a-819b-e9130b015bff"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""fd48e869-3f7e-4b3c-9a4e-8fd73670c108"",
+                    ""path"": ""<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button12"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Gear1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -96,14 +144,19 @@ public partial class @SteeringWheelInputs: IInputActionCollection2, IDisposable
 }");
         // DrivingControls
         m_DrivingControls = asset.FindActionMap("DrivingControls", throwIfNotFound: true);
-        m_DrivingControls_Steering = m_DrivingControls.FindAction("Steering", throwIfNotFound: true);
-        m_DrivingControls_Throttle = m_DrivingControls.FindAction("Throttle", throwIfNotFound: true);
-        m_DrivingControls_Break = m_DrivingControls.FindAction("Break", throwIfNotFound: true);
+        m_DrivingControls_SteeringWheel = m_DrivingControls.FindAction("SteeringWheel", throwIfNotFound: true);
+        m_DrivingControls_Accelerator = m_DrivingControls.FindAction("Accelerator", throwIfNotFound: true);
+        m_DrivingControls_Breake = m_DrivingControls.FindAction("Breake", throwIfNotFound: true);
+        m_DrivingControls_Clutch = m_DrivingControls.FindAction("Clutch", throwIfNotFound: true);
+        // GearShifter
+        m_GearShifter = asset.FindActionMap("GearShifter", throwIfNotFound: true);
+        m_GearShifter_Gear1 = m_GearShifter.FindAction("Gear1", throwIfNotFound: true);
     }
 
     ~@SteeringWheelInputs()
     {
         UnityEngine.Debug.Assert(!m_DrivingControls.enabled, "This will cause a leak and performance issues, SteeringWheelInputs.DrivingControls.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_GearShifter.enabled, "This will cause a leak and performance issues, SteeringWheelInputs.GearShifter.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -165,16 +218,18 @@ public partial class @SteeringWheelInputs: IInputActionCollection2, IDisposable
     // DrivingControls
     private readonly InputActionMap m_DrivingControls;
     private List<IDrivingControlsActions> m_DrivingControlsActionsCallbackInterfaces = new List<IDrivingControlsActions>();
-    private readonly InputAction m_DrivingControls_Steering;
-    private readonly InputAction m_DrivingControls_Throttle;
-    private readonly InputAction m_DrivingControls_Break;
+    private readonly InputAction m_DrivingControls_SteeringWheel;
+    private readonly InputAction m_DrivingControls_Accelerator;
+    private readonly InputAction m_DrivingControls_Breake;
+    private readonly InputAction m_DrivingControls_Clutch;
     public struct DrivingControlsActions
     {
         private @SteeringWheelInputs m_Wrapper;
         public DrivingControlsActions(@SteeringWheelInputs wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Steering => m_Wrapper.m_DrivingControls_Steering;
-        public InputAction @Throttle => m_Wrapper.m_DrivingControls_Throttle;
-        public InputAction @Break => m_Wrapper.m_DrivingControls_Break;
+        public InputAction @SteeringWheel => m_Wrapper.m_DrivingControls_SteeringWheel;
+        public InputAction @Accelerator => m_Wrapper.m_DrivingControls_Accelerator;
+        public InputAction @Breake => m_Wrapper.m_DrivingControls_Breake;
+        public InputAction @Clutch => m_Wrapper.m_DrivingControls_Clutch;
         public InputActionMap Get() { return m_Wrapper.m_DrivingControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -184,28 +239,34 @@ public partial class @SteeringWheelInputs: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_DrivingControlsActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_DrivingControlsActionsCallbackInterfaces.Add(instance);
-            @Steering.started += instance.OnSteering;
-            @Steering.performed += instance.OnSteering;
-            @Steering.canceled += instance.OnSteering;
-            @Throttle.started += instance.OnThrottle;
-            @Throttle.performed += instance.OnThrottle;
-            @Throttle.canceled += instance.OnThrottle;
-            @Break.started += instance.OnBreak;
-            @Break.performed += instance.OnBreak;
-            @Break.canceled += instance.OnBreak;
+            @SteeringWheel.started += instance.OnSteeringWheel;
+            @SteeringWheel.performed += instance.OnSteeringWheel;
+            @SteeringWheel.canceled += instance.OnSteeringWheel;
+            @Accelerator.started += instance.OnAccelerator;
+            @Accelerator.performed += instance.OnAccelerator;
+            @Accelerator.canceled += instance.OnAccelerator;
+            @Breake.started += instance.OnBreake;
+            @Breake.performed += instance.OnBreake;
+            @Breake.canceled += instance.OnBreake;
+            @Clutch.started += instance.OnClutch;
+            @Clutch.performed += instance.OnClutch;
+            @Clutch.canceled += instance.OnClutch;
         }
 
         private void UnregisterCallbacks(IDrivingControlsActions instance)
         {
-            @Steering.started -= instance.OnSteering;
-            @Steering.performed -= instance.OnSteering;
-            @Steering.canceled -= instance.OnSteering;
-            @Throttle.started -= instance.OnThrottle;
-            @Throttle.performed -= instance.OnThrottle;
-            @Throttle.canceled -= instance.OnThrottle;
-            @Break.started -= instance.OnBreak;
-            @Break.performed -= instance.OnBreak;
-            @Break.canceled -= instance.OnBreak;
+            @SteeringWheel.started -= instance.OnSteeringWheel;
+            @SteeringWheel.performed -= instance.OnSteeringWheel;
+            @SteeringWheel.canceled -= instance.OnSteeringWheel;
+            @Accelerator.started -= instance.OnAccelerator;
+            @Accelerator.performed -= instance.OnAccelerator;
+            @Accelerator.canceled -= instance.OnAccelerator;
+            @Breake.started -= instance.OnBreake;
+            @Breake.performed -= instance.OnBreake;
+            @Breake.canceled -= instance.OnBreake;
+            @Clutch.started -= instance.OnClutch;
+            @Clutch.performed -= instance.OnClutch;
+            @Clutch.canceled -= instance.OnClutch;
         }
 
         public void RemoveCallbacks(IDrivingControlsActions instance)
@@ -223,10 +284,61 @@ public partial class @SteeringWheelInputs: IInputActionCollection2, IDisposable
         }
     }
     public DrivingControlsActions @DrivingControls => new DrivingControlsActions(this);
+
+    // GearShifter
+    private readonly InputActionMap m_GearShifter;
+    private List<IGearShifterActions> m_GearShifterActionsCallbackInterfaces = new List<IGearShifterActions>();
+    private readonly InputAction m_GearShifter_Gear1;
+    public struct GearShifterActions
+    {
+        private @SteeringWheelInputs m_Wrapper;
+        public GearShifterActions(@SteeringWheelInputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Gear1 => m_Wrapper.m_GearShifter_Gear1;
+        public InputActionMap Get() { return m_Wrapper.m_GearShifter; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GearShifterActions set) { return set.Get(); }
+        public void AddCallbacks(IGearShifterActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GearShifterActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GearShifterActionsCallbackInterfaces.Add(instance);
+            @Gear1.started += instance.OnGear1;
+            @Gear1.performed += instance.OnGear1;
+            @Gear1.canceled += instance.OnGear1;
+        }
+
+        private void UnregisterCallbacks(IGearShifterActions instance)
+        {
+            @Gear1.started -= instance.OnGear1;
+            @Gear1.performed -= instance.OnGear1;
+            @Gear1.canceled -= instance.OnGear1;
+        }
+
+        public void RemoveCallbacks(IGearShifterActions instance)
+        {
+            if (m_Wrapper.m_GearShifterActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IGearShifterActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GearShifterActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GearShifterActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public GearShifterActions @GearShifter => new GearShifterActions(this);
     public interface IDrivingControlsActions
     {
-        void OnSteering(InputAction.CallbackContext context);
-        void OnThrottle(InputAction.CallbackContext context);
-        void OnBreak(InputAction.CallbackContext context);
+        void OnSteeringWheel(InputAction.CallbackContext context);
+        void OnAccelerator(InputAction.CallbackContext context);
+        void OnBreake(InputAction.CallbackContext context);
+        void OnClutch(InputAction.CallbackContext context);
+    }
+    public interface IGearShifterActions
+    {
+        void OnGear1(InputAction.CallbackContext context);
     }
 }

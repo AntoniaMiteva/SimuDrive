@@ -1,7 +1,9 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CarController : MonoBehaviour
 {
@@ -15,15 +17,14 @@ public class CarController : MonoBehaviour
     private bool isBreaking;
 
     private int gear = 0;
-    private bool isGear = false;
+    private bool isGear = false; // Gear pedal state
     private bool isStart = false;
     private bool isDrive = false;
 
     [SerializeField] private Rigidbody carRigidbody; // Assign this in the Inspector
     private float speed;
 
-
-    [SerializeField] private float motorForce = 0; //shte se promenq ot gears
+    [SerializeField] private float motorForce = 0; // This will change with gears
     [SerializeField] private float breakForce;
     [SerializeField] private float maxSteerAngle;
 
@@ -40,10 +41,45 @@ public class CarController : MonoBehaviour
     private float timer;
     private float holdDur = 3f;
 
-
     [SerializeField] private float maxRPM = 7000f;
     [SerializeField] private float minRPM = 1000f;
     private float currentRPM;
+
+
+    public InputActionAsset inputActions;
+    private InputAction gear1Action;
+    private InputAction gear2Action;
+    private InputAction gear3Action;
+    private InputAction gear4Action;
+    private InputAction gear5Action;
+    private InputAction gearRAction;
+
+    [SerializeField] private float acceleratorSensitivity = 2f; // Adjust this value to make the pedal more sensitive
+
+
+    private void Awake()
+    {
+
+        // Get the GearShifter action map
+        var gearShifterMap = inputActions.FindActionMap("GearShifter");
+
+        // Get the gear1 action
+        gear1Action = gearShifterMap.FindAction("gear1");
+        gear2Action = gearShifterMap.FindAction("gear2");
+        gear3Action = gearShifterMap.FindAction("gear3");
+        gear4Action = gearShifterMap.FindAction("gear4");
+        gear5Action = gearShifterMap.FindAction("gear5");
+        gearRAction = gearShifterMap.FindAction("gearR");
+
+        // Enable the action
+        gear1Action.Enable();
+        gear2Action.Enable();
+        gear3Action.Enable();
+        gear4Action.Enable();
+        gear5Action.Enable();
+        gearRAction.Enable();
+        Debug.Log("gear1 Action enabled successfully!");
+    }
 
     private void Start()
     {
@@ -65,8 +101,23 @@ public class CarController : MonoBehaviour
         UpdateWheels(); // Update visual wheel positions
         CalculateSpeed(); // Calculate and log speed
         Debug.Log("Speed: " + speed + " km/h " + gear);
+        //if(gear==0)Debug.Log(isGear);
+        //else Debug.Log(gear);
+
     }
 
+    private void Update()
+    {
+        if (isGear) // Only allow gear change when clutch is pressed
+        {
+            if (gear1Action.triggered) gear = 1;
+            else if (gear2Action.triggered) gear = 2;
+            else if (gear3Action.triggered) gear = 3;
+            else if (gear4Action.triggered) gear = 4;
+            else if (gear5Action.triggered) gear = 5;
+            else if (gearRAction.triggered) gear = -1;
+        }
+    }
 
 
     private void CalculateSpeed()
@@ -87,16 +138,14 @@ public class CarController : MonoBehaviour
 
     private void IsStarting()
     {
-        // Require Shift to start moving if the car is stationary (speed <= 0)
-        if (Input.GetKey(KeyCode.LeftShift) && !isDrive && (gear == 1 || gear == -1) && carRigidbody.linearVelocity.magnitude <= 0.1f &&
-            (verticalInput != 0 || horizontalInput != 0))
+        // Start the car when accelerator is pressed, even if the clutch is not pressed
+        if (verticalInput != 0 && carRigidbody.linearVelocity.magnitude <= 0.1f)
         {
             isStart = true;
             isDrive = true;
             Debug.Log("Car started moving.");
         }
     }
-
 
 
 
@@ -109,61 +158,48 @@ public class CarController : MonoBehaviour
         else if (speed < 0.1f && Mathf.Abs(verticalInput) == 0)
         {
             isDrive = false; // Only stop driving when completely stopped and no input
-            Debug.Log("Car stopped.");
+            //Debug.Log("Car stopped.");
         }
     }
 
-    private void CalculateRPM()
-    {
-        float speedFactor = speed / 100f; // Normalize speed
-        currentRPM = Mathf.Lerp(minRPM, maxRPM, speedFactor);
-
-        // Prevent RPM from exceeding limits
-        currentRPM = Mathf.Clamp(currentRPM, minRPM, maxRPM);
-    }
-
-
-
     private void UpdateGear()
     {
-        // Only allow gear changes if Shift is pressed
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (isGear) // Clutch must be pressed to change gear
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1) && speed < 20f)
+            if (gear == 1)
             {
-                gear = 1;
-                motorForce = 100;
-                Debug.Log("Gear 1");
+                motorForce = 300;
+                //Debug.Log("Gear 1 engaged");
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2) && speed >= 10f && speed < 40f)
+            else if (gear == 2 && speed >= 10f && speed < 40f)
             {
-                gear = 2;
-                motorForce = 250;
-                Debug.Log("Gear 2");
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha3) && speed >= 40f && speed < 60f)
-            {
-                gear = 3;
                 motorForce = 500;
-                Debug.Log("Gear 3");
+                //Debug.Log("Gear 2 engaged");
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha4) && speed >= 60f && speed < 80f)
+            else if (gear == 3 && speed >= 40f && speed < 60f)
             {
-                gear = 4;
                 motorForce = 700;
-                Debug.Log("Gear 4");
+                //Debug.Log("Gear 3 engaged");
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha5) && speed >= 80f)
+            else if (gear == 4 && speed >= 60f && speed < 80f)
             {
-                gear = 5;
                 motorForce = 1000;
-                Debug.Log("Gear 5");
+                //Debug.Log("Gear 4 engaged");
             }
-            else if (Input.GetKeyDown(KeyCode.R) && speed <= 5f)
+            else if (gear == 5 && speed >= 80f)
             {
-                gear = -1;
-                motorForce = -100;
-                Debug.Log("Reverse gear");
+                motorForce = 15500;
+                //Debug.Log("Gear 5 engaged");
+            }
+            else if (gear == -1 && speed <= 5f)
+            {
+                motorForce = -300;
+                //Debug.Log("Reverse gear engaged");
+            }
+            else
+            {
+                gear = 0; // Gear is 0 when no gear is engaged
+                motorForce = 0; // No motor force when in neutral
             }
         }
     }
@@ -172,10 +208,26 @@ public class CarController : MonoBehaviour
 
     private void HandleMotor()
     {
-        if (isStart && isDrive)
+        if (isStart && isDrive) // The car is already started
         {
-            frontLeftWheelColider.motorTorque = verticalInput * motorForce;
-            frontRightWheelColider.motorTorque = verticalInput * motorForce;
+            float acceleratorInput = Input.GetAxis("Accelerator"); // Read accelerator input
+
+            if (acceleratorInput > 0.1f) // Apply force if accelerator is pressed
+            {
+                float appliedMotorForce = acceleratorInput * motorForce * acceleratorSensitivity; // Apply sensitivity
+                frontLeftWheelColider.motorTorque = appliedMotorForce;
+                frontRightWheelColider.motorTorque = appliedMotorForce;
+            }
+            else
+            {
+                frontLeftWheelColider.motorTorque = 0f;
+                frontRightWheelColider.motorTorque = 0f;
+            }
+        }
+        else
+        {
+            frontLeftWheelColider.motorTorque = 0f;
+            frontRightWheelColider.motorTorque = 0f;
         }
 
         // Update braking force
@@ -190,6 +242,10 @@ public class CarController : MonoBehaviour
             ReleaseBrakes();
         }
     }
+
+
+
+
 
     private void ApplyBreaking()
     {
@@ -211,8 +267,31 @@ public class CarController : MonoBehaviour
     {
         horizontalInput = Input.GetAxis(HORIZONTAL);
         verticalInput = Input.GetAxis(VERTICAL);
-        isBreaking = Input.GetKey(KeyCode.Space);
+
+        // Get pedal values
+        float clutchInput = Input.GetAxis("Clutch");  // Clutch (Z)
+        float brakeInput = Input.GetAxis("Brake");    // Brake (Rz)
+        float acceleratorInput = Input.GetAxis("Accelerator"); // Accelerator (HatSwitch/Y)
+
+        // Debugging
+        Debug.Log($"Clutch: {clutchInput}, Brake: {brakeInput}, Accelerator: {acceleratorInput}");
+
+        // Clutch Logic (Must be pressed to shift gears)
+        if (clutchInput > 0.8) isGear = true;
+        else isGear = false;
+
+        // Braking logic
+        isBreaking = brakeInput > 0.1f;
+
+        // Update the car start condition based on accelerator pedal input
+        if (acceleratorInput > 0.1f && isGear) // Only allow start if clutch is engaged
+        {
+            isStart = true;
+            isDrive = true;
+        }
     }
+
+
 
     private void HandleSteering()
     {
@@ -221,7 +300,6 @@ public class CarController : MonoBehaviour
         frontLeftWheelColider.steerAngle = currentSteerAngle;
         frontRightWheelColider.steerAngle = currentSteerAngle;
     }
-
 
     private void UpdateWheels()
     {
@@ -239,4 +317,10 @@ public class CarController : MonoBehaviour
         wheelTransform.rotation = rot;
         wheelTransform.position = pos;
     }
+
+    public int Gear
+    {
+        get { return gear; } // Gear is the private field in your CarController
+    }
+
 }

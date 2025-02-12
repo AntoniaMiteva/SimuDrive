@@ -1,0 +1,134 @@
+{
+    "name": "GearShifter",
+    "maps": [
+        {
+            "name": "GearShifter",
+            "id": "642aa93b-e6bc-458c-ba45-1f83daf79016",
+            "actions": [
+                {
+                    "name": "gear1",
+                    "type": "Button",
+                    "id": "f627196e-9b3f-46a0-b0a0-c191a0fa6c60",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "gear2",
+                    "type": "Button",
+                    "id": "36fe5a54-f922-4e92-9f98-f8ce4eb05ee6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "gear3",
+                    "type": "Button",
+                    "id": "fdd2dd44-c26e-467c-aad0-9c7909532972",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "gear4",
+                    "type": "Button",
+                    "id": "de004ed1-a314-4e69-9576-ee0928a2bed1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "gear5",
+                    "type": "Button",
+                    "id": "8777c478-511a-4990-b24b-2f98844a771f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "gearR",
+                    "type": "Button",
+                    "id": "981baafd-b843-4154-9fff-9f11ab25f572",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "dcc3fc46-92b7-4dc0-96e7-dcfd32ce31f8",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button13",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "gear1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "22a0d74c-1b62-4f3f-92a3-2f243569f397",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button14",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "gear2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "50ff84d5-b62a-4d26-978e-503cb0bf70a6",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button15",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "gear3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "87347da8-9f1c-4687-b4df-995d14798fec",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button16",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "gear4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b4252200-f960-48f5-a635-6f997dd2cc2b",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button17",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "gear5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a7944f07-6c5d-442a-bb8c-9b497d7f560c",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button18",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "gearR",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

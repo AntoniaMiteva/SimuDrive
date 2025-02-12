@@ -6,27 +6,36 @@
             "id": "200bf6f7-bc4b-48ab-8ba4-38711ff5ede3",
             "actions": [
                 {
-                    "name": "Steering",
+                    "name": "SteeringWheel",
                     "type": "Value",
-                    "id": "6612a484-fa56-4ebd-88f2-0fadd540bc10",
+                    "id": "62bffd6d-8aa5-40a7-b6a2-14a146b8e373",
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Throttle",
+                    "name": "Accelerator",
                     "type": "Value",
-                    "id": "957b0b2a-9bc5-4ad3-bbf3-8d59933928ab",
+                    "id": "8e31ec52-ec27-4a14-8e6a-dfe18a4359de",
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Break",
+                    "name": "Breake",
                     "type": "Value",
-                    "id": "358c7cf8-e675-4f4a-9034-2f562a226ed9",
+                    "id": "c21f5548-9db7-4dc1-aa3c-d24e5f41b360",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Clutch",
+                    "type": "Value",
+                    "id": "16a8546a-53f2-466b-b8b5-39b824af0ced",
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
@@ -36,34 +45,73 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "1b872632-573a-4cb0-af0e-0b95430da8f1",
-                    "path": "<Joystick>/stick/x",
+                    "id": "07ce96f5-c1c4-42cd-862b-4a1606ec937c",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/hat/x",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Steering",
+                    "action": "SteeringWheel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "a967cd50-28b5-4f9b-b24e-3393ce5d536f",
-                    "path": "<Joystick>/stick/y",
+                    "id": "3f911ef5-1786-4226-8e90-656bc2976e50",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/hat/y",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Throttle",
+                    "action": "Accelerator",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "821831a8-1e15-4264-867b-7af574dbdd3f",
-                    "path": "<Joystick>/stick",
+                    "id": "1db65216-9fcc-4a29-b9af-d0c8e89f2963",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/rz",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Break",
+                    "action": "Breake",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5245362e-f3bd-4cc2-afde-48038ff8085d",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Clutch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "GearShifter",
+            "id": "291630b3-eb3f-4eec-98e6-00eb91d15720",
+            "actions": [
+                {
+                    "name": "Gear1",
+                    "type": "Button",
+                    "id": "4b892370-0c69-486a-819b-e9130b015bff",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "fd48e869-3f7e-4b3c-9a4e-8fd73670c108",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button12",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Gear1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

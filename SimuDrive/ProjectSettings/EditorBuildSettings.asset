@@ -27,5 +27,5 @@ EditorBuildSettings:
     path: Assets/Scenes/StartDriveScene.unity
     guid: 0d0d25fe709582745b8482b9a3bb4163
   m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 82dcbd6690e19324086f4245444d021d, type: 3}
   m_UseUCBPForAssetBundles: 0
