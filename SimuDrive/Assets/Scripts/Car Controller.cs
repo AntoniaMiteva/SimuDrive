@@ -56,14 +56,27 @@ public class CarController : MonoBehaviour
 
     [SerializeField] private float acceleratorSensitivity = 2f; // Adjust this value to make the pedal more sensitive
 
+    public float Speed { get; private set; }
+    private Rigidbody rb;
+
+    private bool isSteeringWheelConnected = false;
+
 
     private void Awake()
     {
+        if (inputActions == null)
+        {
+            Debug.LogError("Input Actions is not assigned in the Inspector.");
+            return;
+        }
 
-        // Get the GearShifter action map
         var gearShifterMap = inputActions.FindActionMap("GearShifter");
+        if (gearShifterMap == null)
+        {
+            Debug.LogError("GearShifter action map not found in Input Actions.");
+            return;
+        }
 
-        // Get the gear1 action
         gear1Action = gearShifterMap.FindAction("gear1");
         gear2Action = gearShifterMap.FindAction("gear2");
         gear3Action = gearShifterMap.FindAction("gear3");
@@ -71,14 +84,21 @@ public class CarController : MonoBehaviour
         gear5Action = gearShifterMap.FindAction("gear5");
         gearRAction = gearShifterMap.FindAction("gearR");
 
-        // Enable the action
+        if (gear1Action == null || gear2Action == null || gear3Action == null ||
+            gear4Action == null || gear5Action == null || gearRAction == null)
+        {
+            Debug.LogError("One or more actions are missing in the GearShifter action map.");
+            return;
+        }
+
         gear1Action.Enable();
         gear2Action.Enable();
         gear3Action.Enable();
         gear4Action.Enable();
         gear5Action.Enable();
         gearRAction.Enable();
-        Debug.Log("gear1 Action enabled successfully!");
+
+        Debug.Log("Actions enabled successfully!");
     }
 
     private void Start()
@@ -88,8 +108,23 @@ public class CarController : MonoBehaviour
         ConfigureFriction(frontRightWheelColider);
         ConfigureFriction(backLeftWheelColider);
         ConfigureFriction(backRightWheelColider);
+        rb = GetComponent<Rigidbody>();
+        DetectSteeringWheel();
     }
-
+    private void DetectSteeringWheel()
+    {
+        foreach (var device in InputSystem.devices)
+        {
+            if (device.description.product != null && device.description.product.ToLower().Contains("wheel"))
+            {
+                isSteeringWheelConnected = true;
+                Debug.Log("Steering Wheel Detected: " + device.description.product);
+                return;
+            }
+        }
+        isSteeringWheelConnected = false;
+        Debug.Log("No Steering Wheel Detected. Using Keyboard Controls.");
+    }
     private void FixedUpdate()
     {
         GetInput();
@@ -101,23 +136,29 @@ public class CarController : MonoBehaviour
         UpdateWheels(); // Update visual wheel positions
         CalculateSpeed(); // Calculate and log speed
         Debug.Log("Speed: " + speed + " km/h " + gear);
-        //if(gear==0)Debug.Log(isGear);
-        //else Debug.Log(gear);
+        //Debug.Log(isGear);
+        
 
     }
 
     private void Update()
     {
+
         if (isGear) // Only allow gear change when clutch is pressed
         {
-            if (gear1Action.triggered) gear = 1;
-            else if (gear2Action.triggered) gear = 2;
-            else if (gear3Action.triggered) gear = 3;
-            else if (gear4Action.triggered) gear = 4;
-            else if (gear5Action.triggered) gear = 5;
-            else if (gearRAction.triggered) gear = -1;
+            if (gear1Action.triggered || Input.GetKeyDown(KeyCode.Alpha1)) gear = 1;
+            else if (gear2Action.triggered || Input.GetKeyDown(KeyCode.Alpha2)) gear = 2;
+            else if (gear3Action.triggered || Input.GetKeyDown(KeyCode.Alpha3)) gear = 3;
+            else if (gear4Action.triggered || Input.GetKeyDown(KeyCode.Alpha4)) gear = 4;
+            else if (gear5Action.triggered || Input.GetKeyDown(KeyCode.Alpha5)) gear = 5;
+            else if (gearRAction.triggered || Input.GetKeyDown(KeyCode.R)) gear = -1;
+
+            //Debug.Log("Gear changed to: " + gear);
         }
+
+        Speed = rb.linearVelocity.magnitude; // Fix: Change linearVelocity to velocity
     }
+
 
 
     private void CalculateSpeed()
@@ -208,13 +249,13 @@ public class CarController : MonoBehaviour
 
     private void HandleMotor()
     {
-        if (isStart && isDrive) // The car is already started
+        if (isStart && isDrive && gear != 0) // Ensure the car has started and a gear is engaged
         {
-            float acceleratorInput = Input.GetAxis("Accelerator"); // Read accelerator input
+            float appliedMotorForce = verticalInput * motorForce * acceleratorSensitivity;
 
-            if (acceleratorInput > 0.1f) // Apply force if accelerator is pressed
+            // Apply force to wheels only if accelerator is pressed
+            if (verticalInput > 0.1f)
             {
-                float appliedMotorForce = acceleratorInput * motorForce * acceleratorSensitivity; // Apply sensitivity
                 frontLeftWheelColider.motorTorque = appliedMotorForce;
                 frontRightWheelColider.motorTorque = appliedMotorForce;
             }
@@ -230,9 +271,8 @@ public class CarController : MonoBehaviour
             frontRightWheelColider.motorTorque = 0f;
         }
 
-        // Update braking force
+        // Apply braking force
         cureenrBreakForce = isBreaking ? breakForce : 0f;
-
         if (isBreaking)
         {
             ApplyBreaking();
@@ -242,6 +282,7 @@ public class CarController : MonoBehaviour
             ReleaseBrakes();
         }
     }
+
 
 
 
@@ -265,30 +306,40 @@ public class CarController : MonoBehaviour
 
     private void GetInput()
     {
-        horizontalInput = Input.GetAxis(HORIZONTAL);
-        verticalInput = Input.GetAxis(VERTICAL);
+        bool wheelConnected = IsSteeringWheelConnected();
 
-        // Get pedal values
-        float clutchInput = Input.GetAxis("Clutch");  // Clutch (Z)
-        float brakeInput = Input.GetAxis("Brake");    // Brake (Rz)
-        float acceleratorInput = Input.GetAxis("Accelerator"); // Accelerator (HatSwitch/Y)
-
-        // Debugging
-        Debug.Log($"Clutch: {clutchInput}, Brake: {brakeInput}, Accelerator: {acceleratorInput}");
-
-        // Clutch Logic (Must be pressed to shift gears)
-        if (clutchInput > 0.8) isGear = true;
-        else isGear = false;
-
-        // Braking logic
-        isBreaking = brakeInput > 0.1f;
-
-        // Update the car start condition based on accelerator pedal input
-        if (acceleratorInput > 0.1f && isGear) // Only allow start if clutch is engaged
+        if (wheelConnected)
         {
-            isStart = true;
-            isDrive = true;
+            // Steering Wheel Input
+            horizontalInput = Input.GetAxis("Steering");  // Wheel rotation
+            verticalInput = Input.GetAxis("Accelerator"); // Pedal for acceleration
+            isBreaking = Input.GetAxis("Brake") > 0.1f;   // Pedal for brake
+            isGear = Input.GetAxis("Clutch") > 0.8f;      // Pedal for clutch
         }
+        else
+        {
+            // Keyboard Input
+            horizontalInput = Input.GetAxis("Horizontal");  // A/D or Left/Right Arrows
+            verticalInput = Input.GetKey(KeyCode.UpArrow) ? 1f : 0f; // Up Arrow for acceleration
+            isBreaking = Input.GetKey(KeyCode.Space);       // Space for brake
+            isGear = Input.GetKey(KeyCode.LeftShift);       // Left Shift for clutch
+        }
+
+        Debug.Log("Input Mode: " + (wheelConnected ? "Steering Wheel" : "Keyboard"));
+    }
+
+
+    bool IsSteeringWheelConnected()
+    {
+        string[] joysticks = Input.GetJoystickNames();
+        foreach (string joystick in joysticks)
+        {
+            if (!string.IsNullOrEmpty(joystick))
+            {
+                return true; // Steering wheel detected
+            }
+        }
+        return false; // No wheel detected, use keyboard
     }
 
 
