@@ -88,34 +88,6 @@
                     "isPartOfComposite": false
                 }
             ]
-        },
-        {
-            "name": "GearShifter",
-            "id": "291630b3-eb3f-4eec-98e6-00eb91d15720",
-            "actions": [
-                {
-                    "name": "Gear1",
-                    "type": "Button",
-                    "id": "4b892370-0c69-486a-819b-e9130b015bff",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "fd48e869-3f7e-4b3c-9a4e-8fd73670c108",
-                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button12",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Gear1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
         }
     ],
     "controlSchemes": []

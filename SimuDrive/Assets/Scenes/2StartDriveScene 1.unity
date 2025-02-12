@@ -1346,9 +1346,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   step1: {fileID: 69109435}
   step2: {fileID: 459992642}
-  step3: {fileID: 0}
-  step4: {fileID: 0}
-  stepClutchPtoblem: {fileID: 0}
+  step3: {fileID: 755696931}
+  step4: {fileID: 904669747}
+  stepClutchProblem: {fileID: 1154141233}
   carController: {fileID: 1334791319}
 --- !u!114 &1583021270
 MonoBehaviour:
@@ -1665,7 +1665,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
   orthographic: 0

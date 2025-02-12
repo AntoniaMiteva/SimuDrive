@@ -110,34 +110,6 @@ public partial class @SteeringWheelInputs: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
-        },
-        {
-            ""name"": ""GearShifter"",
-            ""id"": ""291630b3-eb3f-4eec-98e6-00eb91d15720"",
-            ""actions"": [
-                {
-                    ""name"": ""Gear1"",
-                    ""type"": ""Button"",
-                    ""id"": ""4b892370-0c69-486a-819b-e9130b015bff"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""fd48e869-3f7e-4b3c-9a4e-8fd73670c108"",
-                    ""path"": ""<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button12"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Gear1"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
         }
     ],
     ""controlSchemes"": []
@@ -148,15 +120,11 @@ public partial class @SteeringWheelInputs: IInputActionCollection2, IDisposable
         m_DrivingControls_Accelerator = m_DrivingControls.FindAction("Accelerator", throwIfNotFound: true);
         m_DrivingControls_Breake = m_DrivingControls.FindAction("Breake", throwIfNotFound: true);
         m_DrivingControls_Clutch = m_DrivingControls.FindAction("Clutch", throwIfNotFound: true);
-        // GearShifter
-        m_GearShifter = asset.FindActionMap("GearShifter", throwIfNotFound: true);
-        m_GearShifter_Gear1 = m_GearShifter.FindAction("Gear1", throwIfNotFound: true);
     }
 
     ~@SteeringWheelInputs()
     {
         UnityEngine.Debug.Assert(!m_DrivingControls.enabled, "This will cause a leak and performance issues, SteeringWheelInputs.DrivingControls.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_GearShifter.enabled, "This will cause a leak and performance issues, SteeringWheelInputs.GearShifter.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -284,61 +252,11 @@ public partial class @SteeringWheelInputs: IInputActionCollection2, IDisposable
         }
     }
     public DrivingControlsActions @DrivingControls => new DrivingControlsActions(this);
-
-    // GearShifter
-    private readonly InputActionMap m_GearShifter;
-    private List<IGearShifterActions> m_GearShifterActionsCallbackInterfaces = new List<IGearShifterActions>();
-    private readonly InputAction m_GearShifter_Gear1;
-    public struct GearShifterActions
-    {
-        private @SteeringWheelInputs m_Wrapper;
-        public GearShifterActions(@SteeringWheelInputs wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Gear1 => m_Wrapper.m_GearShifter_Gear1;
-        public InputActionMap Get() { return m_Wrapper.m_GearShifter; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(GearShifterActions set) { return set.Get(); }
-        public void AddCallbacks(IGearShifterActions instance)
-        {
-            if (instance == null || m_Wrapper.m_GearShifterActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_GearShifterActionsCallbackInterfaces.Add(instance);
-            @Gear1.started += instance.OnGear1;
-            @Gear1.performed += instance.OnGear1;
-            @Gear1.canceled += instance.OnGear1;
-        }
-
-        private void UnregisterCallbacks(IGearShifterActions instance)
-        {
-            @Gear1.started -= instance.OnGear1;
-            @Gear1.performed -= instance.OnGear1;
-            @Gear1.canceled -= instance.OnGear1;
-        }
-
-        public void RemoveCallbacks(IGearShifterActions instance)
-        {
-            if (m_Wrapper.m_GearShifterActionsCallbackInterfaces.Remove(instance))
-                UnregisterCallbacks(instance);
-        }
-
-        public void SetCallbacks(IGearShifterActions instance)
-        {
-            foreach (var item in m_Wrapper.m_GearShifterActionsCallbackInterfaces)
-                UnregisterCallbacks(item);
-            m_Wrapper.m_GearShifterActionsCallbackInterfaces.Clear();
-            AddCallbacks(instance);
-        }
-    }
-    public GearShifterActions @GearShifter => new GearShifterActions(this);
     public interface IDrivingControlsActions
     {
         void OnSteeringWheel(InputAction.CallbackContext context);
         void OnAccelerator(InputAction.CallbackContext context);
         void OnBreake(InputAction.CallbackContext context);
         void OnClutch(InputAction.CallbackContext context);
-    }
-    public interface IGearShifterActions
-    {
-        void OnGear1(InputAction.CallbackContext context);
     }
 }
