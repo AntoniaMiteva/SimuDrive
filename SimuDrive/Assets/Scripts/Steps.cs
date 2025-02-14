@@ -38,6 +38,16 @@ public class Steps : MonoBehaviour
         Debug.Log("Clutch Input: " + clutchInput);
         Debug.Log("Car Speed: " + carController.Speed);
 
+        if (carController.Speed <= 5f && carController.Gear == 1 && !(clutchInput >= 0.2f || Input.GetKey(KeyCode.LeftShift)))
+        {
+            stepClutchProblem.SetActive(true); // Show warning
+        }
+        else
+        {
+            stepClutchProblem.SetActive(false); // Hide warning
+        }
+
+
         switch (currentStep)
         {
             case StepState.Step1:
@@ -57,12 +67,7 @@ public class Steps : MonoBehaviour
                         step2.SetActive(false);
                         step3.SetActive(true);
                         currentStep = StepState.Step3;
-                        stepClutchProblem.SetActive(false);
                     }
-                }
-                else
-                {
-                    stepClutchProblem.SetActive(true);
                 }
                 break;
 
@@ -90,14 +95,12 @@ public class Steps : MonoBehaviour
                     {
                         // Clutch was released too quickly, show a warning
                         Debug.LogWarning("Release the clutch more carefully!");
-                        stepClutchProblem.SetActive(true);
                     }
                 }
                 else if (carController.Speed <= 5f)
                 {
                     // Car speed is not above 5, show a warning
                     Debug.LogWarning("Car speed must be above 5 to complete Step 4.");
-                    stepClutchProblem.SetActive(true);
                 }
                 break;
 
@@ -106,6 +109,8 @@ public class Steps : MonoBehaviour
                 break;
         }
     }
+
+
 
 
     // Helper method to check if the clutch is released smoothly
