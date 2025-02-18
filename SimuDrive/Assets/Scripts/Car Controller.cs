@@ -61,7 +61,7 @@ public class CarController : MonoBehaviour
 
     private bool isSteeringWheelConnected = false;
 
-
+    [SerializeField] private float[] gearSpeedLimits = new float[] { 0f, 20f, 40f, 60f, 80f, 100f }; // Speed limits for each gear (0: Neutral, 1-5: Gears, -1: Reverse)
     private void Awake()
     {
         if (inputActions == null)
@@ -135,9 +135,8 @@ public class CarController : MonoBehaviour
         HandleSteering(); // Handle steering
         UpdateWheels(); // Update visual wheel positions
         CalculateSpeed(); // Calculate and log speed
-        Debug.Log("Speed: " + speed + " km/h " + gear);
-        //Debug.Log(isGear);
-
+	CalculateRPM(); // Calculate RPM based on speed and gear
+        Debug.Log("Speed: " + speed + " km/h, Gear: " + gear + ", RPM: " + currentRPM);
 
     }
 
@@ -207,51 +206,72 @@ public class CarController : MonoBehaviour
     {
         if (isGear) // Clutch must be pressed to change gear
         {
-            if (gear == 1)
+            if (gear == 1 && speed <= gearSpeedLimits[1])
             {
                 motorForce = 300;
-                //Debug.Log("Gear 1 engaged");
             }
-            else if (gear == 2 && speed >= 10f && speed < 40f)
+            else if (gear == 2 && speed >= 10f && speed <= gearSpeedLimits[2])
             {
                 motorForce = 500;
-                //Debug.Log("Gear 2 engaged");
             }
-            else if (gear == 3 && speed >= 40f && speed < 60f)
+            else if (gear == 3 && speed >= 40f && speed <= gearSpeedLimits[3])
             {
                 motorForce = 700;
-                //Debug.Log("Gear 3 engaged");
             }
-            else if (gear == 4 && speed >= 60f && speed < 80f)
+            else if (gear == 4 && speed >= 60f && speed <= gearSpeedLimits[4])
             {
                 motorForce = 1000;
-                //Debug.Log("Gear 4 engaged");
             }
-            else if (gear == 5 && speed >= 80f)
+            else if (gear == 5 && speed >= 80f && speed <= gearSpeedLimits[5])
             {
                 motorForce = 15500;
-                //Debug.Log("Gear 5 engaged");
             }
             else if (gear == -1 && speed <= 5f)
             {
                 motorForce = -300;
-                //Debug.Log("Reverse gear engaged");
             }
             else
             {
                 gear = 0; // Gear is 0 when no gear is engaged
                 motorForce = 0; // No motor force when in neutral
             }
+
+            // Enforce speed limits
+            if (gear > 0 && gear < gearSpeedLimits.Length && speed > gearSpeedLimits[gear])
+            {
+                motorForce = 0; // Stop applying force if speed exceeds the limit
+            }
         }
     }
 
-
+    private void CalculateRPM()
+    {
+        if (gear > 0 && gear < gearSpeedLimits.Length)
+        {
+            float gearRatio = speed / gearSpeedLimits[gear];
+            currentRPM = Mathf.Lerp(minRPM, maxRPM, gearRatio);
+        }
+        else
+        {
+            currentRPM = minRPM; // Idle RPM when in neutral or reverse
+        }
+    }
 
     private void HandleMotor()
     {
         if (isStart && isDrive && gear != 0) // Ensure the car has started and a gear is engaged
         {
             float appliedMotorForce = verticalInput * motorForce * acceleratorSensitivity;
+
+            // Adjust motor force based on RPM
+            if (currentRPM > maxRPM * 0.9f) // Reduce force if RPM is too high
+            {
+                appliedMotorForce *= 0.5f;
+            }
+            else if (currentRPM < minRPM * 1.1f) // Reduce force if RPM is too low
+            {
+                appliedMotorForce *= 0.5f;
+            }
 
             // Apply force to wheels only if accelerator is pressed
             if (verticalInput > 0.1f)

@@ -10,5 +10,8 @@ public class FlyersMenu : MonoBehaviour
         SceneManager.LoadScene("Main Menu");
     }
     
-
+    public void OpenURL()
+    {
+        Application.OpenURL("https://avtoizpit.com/");
+    }
 }
