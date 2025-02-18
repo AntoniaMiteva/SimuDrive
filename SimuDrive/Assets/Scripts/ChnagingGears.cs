@@ -13,10 +13,6 @@ public class ChangingGears : MonoBehaviour
     [SerializeField] private GameObject step7;
     [SerializeField] private GameObject step8;
     [SerializeField] private GameObject step9;
-    [SerializeField] private GameObject step10;
-    [SerializeField] private GameObject step11;
-    [SerializeField] private GameObject step12;
-    [SerializeField] private GameObject step13;
     [SerializeField] private GameObject stepClutchProblem;
     [SerializeField] private CarController carController; // Reference to the CarController
 
@@ -26,7 +22,7 @@ public class ChangingGears : MonoBehaviour
     private float previousClutchInput; // Track previous clutch input for smooth release check
     private float clutchReleaseThreshold = 0.5f; // Threshold for smooth release
 
-    private enum StepState { Step1, Step2, Step3, Step4, Step5, Step6, Step7, Step8, Step9, Step10, Step11, Step12, Step13, Completed }
+    private enum StepState { Step1, Step2, Step3, Step4, Step5, Step6, Step7, Step8, Step9, Completed }
     private StepState currentStep = StepState.Step1;
 
     void Start()
@@ -40,10 +36,6 @@ public class ChangingGears : MonoBehaviour
         step7.SetActive(false);
         step8.SetActive(false);
         step9.SetActive(false);
-        step10.SetActive(false);
-        step11.SetActive(false);
-        step12.SetActive(false);
-        step13.SetActive(false);
         stepClutchProblem.SetActive(false);
     }
 
@@ -52,8 +44,11 @@ public class ChangingGears : MonoBehaviour
         clutchInput = Input.GetAxis("Clutch");
         acceleratorInput = Input.GetAxis("Accelerator");
 
-        // Check for clutch problem (e.g., car is in gear without sufficient clutch input)
-        if ((carController.Gear == 1 || carController.Gear == 2 || carController.Gear == 3) && !(clutchInput >= 0.2f || Input.GetKey(KeyCode.LeftShift)))
+        // Debugging logs
+        Debug.Log("Clutch Input: " + clutchInput);
+        Debug.Log("Car Speed: " + carController.Speed);
+
+        if (carController.Speed <= 5f && carController.Gear == 1 && !(clutchInput >= 0.2f || Input.GetKey(KeyCode.LeftShift)))
         {
             stepClutchProblem.SetActive(true); // Show warning
         }
@@ -62,10 +57,10 @@ public class ChangingGears : MonoBehaviour
             stepClutchProblem.SetActive(false); // Hide warning
         }
 
-        // Handle step progression
+
         switch (currentStep)
         {
-            case StepState.Step1: // Step 1: Press Clutch
+            case StepState.Step1:
                 if (clutchInput > 0.8f || Input.GetKeyDown(KeyCode.LeftShift))
                 {
                     step1.SetActive(false);
@@ -74,7 +69,7 @@ public class ChangingGears : MonoBehaviour
                 }
                 break;
 
-            case StepState.Step2: // Step 2: Shift to Gear 1
+            case StepState.Step2:
                 if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
                 {
                     if (carController.Gear == 1 || Input.GetKeyDown(KeyCode.Alpha1))
@@ -84,10 +79,9 @@ public class ChangingGears : MonoBehaviour
                         currentStep = StepState.Step3;
                     }
                 }
-                else stepClutchProblem.SetActive(true); // Show warning
                 break;
 
-            case StepState.Step3: // Step 3: Shift to Gear 2
+            case StepState.Step3:
                 if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
                 {
                     if (carController.Gear == 2 || Input.GetKeyDown(KeyCode.Alpha2))
@@ -97,9 +91,9 @@ public class ChangingGears : MonoBehaviour
                         currentStep = StepState.Step4;
                     }
                 }
-                else stepClutchProblem.SetActive(true); // Show warning
                 break;
-            case StepState.Step4: // Step 3: Shift to Gear 3
+
+            case StepState.Step4:
                 if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
                 {
                     if (carController.Gear == 3 || Input.GetKeyDown(KeyCode.Alpha3))
@@ -109,9 +103,9 @@ public class ChangingGears : MonoBehaviour
                         currentStep = StepState.Step5;
                     }
                 }
-                else stepClutchProblem.SetActive(true); // Show warning
                 break;
-            case StepState.Step5: // Step 3: Shift to Gear 3
+
+            case StepState.Step5:
                 if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
                 {
                     if (carController.Gear == 4 || Input.GetKeyDown(KeyCode.Alpha4))
@@ -121,9 +115,8 @@ public class ChangingGears : MonoBehaviour
                         currentStep = StepState.Step6;
                     }
                 }
-                else stepClutchProblem.SetActive(true); // Show warning
                 break;
-            case StepState.Step6: // Step 3: Shift to Gear 3
+            case StepState.Step6:
                 if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
                 {
                     if (carController.Gear == 5 || Input.GetKeyDown(KeyCode.Alpha5))
@@ -133,9 +126,8 @@ public class ChangingGears : MonoBehaviour
                         currentStep = StepState.Step7;
                     }
                 }
-                else stepClutchProblem.SetActive(true); // Show warning
                 break;
-            case StepState.Step7: // Step 3: Shift to Gear 3
+            case StepState.Step7:
                 if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
                 {
                     if (carController.Gear == -1 || Input.GetKeyDown(KeyCode.R))
@@ -145,104 +137,36 @@ public class ChangingGears : MonoBehaviour
                         currentStep = StepState.Step8;
                     }
                 }
-                else stepClutchProblem.SetActive(true); // Show warning
                 break;
-            case StepState.Step8: // Step 3: Shift to Gear 3
+            case StepState.Step8:
                 if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
                 {
-                    if (Input.GetKeyDown(KeyCode.Alpha0))
+                    if (carController.Gear == 0 || Input.GetKeyDown(KeyCode.Alpha0))
                     {
                         step8.SetActive(false);
                         step9.SetActive(true);
                         currentStep = StepState.Step9;
                     }
                 }
-                else stepClutchProblem.SetActive(true); // Show warning
                 break;
-
             case StepState.Step9:
-                if (Input.GetKey(KeyCode.LeftShift)) // Detect when the clutch is fully released
+                if (clutchInput < 0.2f || !Input.GetKey(KeyCode.LeftShift)) // Speed above 5
                 {
-                    step9.SetActive(true);
-                }
-                else
-                {
-                    step9.SetActive(false);
-                    step10.SetActive(true);
-                    currentStep = StepState.Step10;
-                }
-                break;
-            case StepState.Step10:
-                if (clutchInput > 0.8f || Input.GetKeyDown(KeyCode.LeftShift))
-                {
-                    step10.SetActive(false);
-                    step11.SetActive(true);
-                    currentStep = StepState.Step11;
-                }
-                break;
-
-            case StepState.Step11:
-                if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
-                {
-                    if (carController.Gear == 1 || Input.GetKeyDown(KeyCode.Alpha1))
-                    {
-                        step11.SetActive(false);
-                        step12.SetActive(true);
-                        currentStep = StepState.Step12;
-                    }
-                }
-                break;
-
-            case StepState.Step12:
-                if (acceleratorInput > 0.1f || Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    step12.SetActive(false);
-                    currentStep = StepState.Completed;
-                }
-                break;
-
-            case StepState.Step13:
-                // Check if clutch is almost fully released and speed is above 5
-                if ((clutchInput < 0.2f || Input.GetKeyUp(KeyCode.LeftShift)) && carController.Speed > 4f) // Speed above 5
-                {
-                    if (IsClutchReleasedSmoothly())
-                    {
                         // Step 4 completed successfully
-                        step13.SetActive(false);
+                        step9.SetActive(false);
                         currentStep = StepState.Completed;
+                        Debug.Log("Step 4 completed: Clutch released smoothly and speed is above 5!");
                     }
-                    else
-                    {
-                        // Clutch was released too quickly, show a warning
-                        Debug.LogWarning("Release the clutch more carefully!");
-                    }
-                }
-                else if (carController.Speed <= 5f)
-                {
-                    // Car speed is not above 5, show a warning
-                    Debug.LogWarning("Car speed must be above 5 to complete Step 4.");
-                }
+                   
                 break;
 
-            case StepState.Completed: // Step 19: All steps completed
-                Debug.Log("All steps completed!");
+
+            case StepState.Completed:
+                // All steps completed
                 break;
         }
     }
-    private bool IsClutchReleasedSmoothly()
-    {
-        // Calculate the rate of clutch release
-        float clutchReleaseRate = previousClutchInput - clutchInput;
 
-        // Update the previous clutch input for the next frame
-        previousClutchInput = clutchInput;
 
-        // If the release rate is too high, the clutch was released too quickly
-        if (clutchReleaseRate > clutchReleaseThreshold)
-        {
-            return false; // Clutch was released too quickly
-        }
 
-        return true; // Clutch was released smoothly
-    }
 }

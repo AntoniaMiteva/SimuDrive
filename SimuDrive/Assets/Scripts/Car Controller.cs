@@ -137,7 +137,7 @@ public class CarController : MonoBehaviour
         CalculateSpeed(); // Calculate and log speed
         Debug.Log("Speed: " + speed + " km/h " + gear);
         //Debug.Log(isGear);
-
+        
 
     }
 
