@@ -34,9 +34,6 @@ public class Steps : MonoBehaviour
         clutchInput = Input.GetAxis("Clutch");
         acceleratorInput = Input.GetAxis("Accelerator");
 
-        // Debugging logs
-        Debug.Log("Clutch Input: " + clutchInput);
-        Debug.Log("Car Speed: " + carController.Speed);
 
         if (carController.Speed <= 5f && carController.Gear == 1 && !(clutchInput >= 0.2f || Input.GetKey(KeyCode.LeftShift)))
         {
@@ -82,14 +79,13 @@ public class Steps : MonoBehaviour
 
             case StepState.Step4:
                 // Check if clutch is almost fully released and speed is above 5
-                if ((clutchInput < 0.2f || Input.GetKeyUp(KeyCode.LeftShift)) && carController.Speed > 5f) // Speed above 5
+                if ((clutchInput < 0.2f || Input.GetKeyUp(KeyCode.LeftShift)) && carController.Speed > 4f) // Speed above 5
                 {
                     if (IsClutchReleasedSmoothly())
                     {
                         // Step 4 completed successfully
                         step4.SetActive(false);
                         currentStep = StepState.Completed;
-                        Debug.Log("Step 4 completed: Clutch released smoothly and speed is above 5!");
                     }
                     else
                     {
