@@ -127,6 +127,7 @@ public partial class @SteeringWheelInputs: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_DrivingControls.enabled, "This will cause a leak and performance issues, SteeringWheelInputs.DrivingControls.Disable() has not been called.");
     }
 
+
     public void Dispose()
     {
         UnityEngine.Object.Destroy(asset);
