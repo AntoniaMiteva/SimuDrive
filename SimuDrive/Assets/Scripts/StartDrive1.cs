@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Steps : MonoBehaviour
+public class StartDrive1 : MonoBehaviour
 {
     [SerializeField] private GameObject step1;
     [SerializeField] private GameObject step2;

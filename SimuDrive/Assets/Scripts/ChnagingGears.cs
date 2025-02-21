@@ -14,9 +14,6 @@ public class ChangingGears : MonoBehaviour
     [SerializeField] private GameObject step8;
     [SerializeField] private GameObject step9;
     [SerializeField] private GameObject step10;
-    [SerializeField] private GameObject step11;
-    [SerializeField] private GameObject step12;
-    [SerializeField] private GameObject step13;
     [SerializeField] private GameObject stepClutchProblem;
     [SerializeField] private CarController carController; // Reference to the CarController
 
@@ -26,7 +23,7 @@ public class ChangingGears : MonoBehaviour
     private float previousClutchInput; // Track previous clutch input for smooth release check
     private float clutchReleaseThreshold = 0.5f; // Threshold for smooth release
 
-    private enum StepState { Step1, Step2, Step3, Step4, Step5, Step6, Step7, Step8, Step9, Step10, Step11, Step12, Step13, Completed }
+    private enum StepState { Step1, Step2, Step3, Step4, Step5, Step6, Step7, Step8, Step9, Step10, Completed }
     private StepState currentStep = StepState.Step1;
 
     void Start()
@@ -41,9 +38,6 @@ public class ChangingGears : MonoBehaviour
         step8.SetActive(false);
         step9.SetActive(false);
         step10.SetActive(false);
-        step11.SetActive(false);
-        step12.SetActive(false);
-        step13.SetActive(false);
         stepClutchProblem.SetActive(false);
     }
 
@@ -167,64 +161,23 @@ public class ChangingGears : MonoBehaviour
                     // Step 4 completed successfully
                     step9.SetActive(false);
                     step10.SetActive(true);
-                    currentStep = StepState.Step10;
-                    Debug.Log("Step 4 completed: Clutch released smoothly and speed is above 5!");
+                    currentStep = StepState.Completed;
                 }
 
                 break;
-            case StepState.Step10:
-                if (clutchInput > 0.8f || Input.GetKeyDown(KeyCode.LeftShift))
-                {
-                    step10.SetActive(false);
-                    step11.SetActive(true);
-                    currentStep = StepState.Step11;
-                }
-                break;
-
-            case StepState.Step11:
-                if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
-                {
-                    if (carController.Gear == 1 || Input.GetKeyDown(KeyCode.Alpha1))
-                    {
-                        step11.SetActive(false);
-                        step12.SetActive(true);
-                        currentStep = StepState.Step3;
-                    }
-                }
-                break;
-            case StepState.Step12:
-                if (acceleratorInput > 0.1f || Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    step12.SetActive(false);
-                    step13.SetActive(true);
-                    currentStep = StepState.Step13;
-                }
-                break;
-            case StepState.Step13:
-                // Check if clutch is almost fully released and speed is above 5
-                if ((clutchInput < 0.2f || Input.GetKeyUp(KeyCode.LeftShift)) && carController.Speed > 5f) // Speed above 5
-                {
-                    if (IsClutchReleasedSmoothly())
-                    {
-                        // Step 4 completed successfully
-                        step4.SetActive(false);
-                        currentStep = StepState.Completed;
-                        Debug.Log("Step 4 completed: Clutch released smoothly and speed is above 5!");
-                    }
-                    else
-                    {
-                        // Clutch was released too quickly, show a warning
-                        Debug.LogWarning("Release the clutch more carefully!");
-                    }
-                }
-                else if (carController.Speed <= 5f)
-                {
-                    // Car speed is not above 5, show a warning
-                    Debug.LogWarning("Car speed must be above 5 to complete Step 4.");
-                }
-                break;
+            
             case StepState.Completed:
-                // All steps completed
+                step1.SetActive(false);
+                step2.SetActive(false);
+                step3.SetActive(false);
+                step4.SetActive(false);
+                step5.SetActive(false);
+                step6.SetActive(false);
+                step7.SetActive(false);
+                step8.SetActive(false);
+                step9.SetActive(false);
+                step10.SetActive(true);
+                stepClutchProblem.SetActive(false);
                 break;
         }
     }

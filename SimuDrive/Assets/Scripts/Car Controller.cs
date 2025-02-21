@@ -24,7 +24,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private Rigidbody carRigidbody; // Assign this in the Inspector
     private float speed;
 
-    [SerializeField] private float motorForce = 0; // This will change with gears
+    [SerializeField] public float motorForce = 0; // This will change with gears
     [SerializeField] private float breakForce;
     [SerializeField] private float maxSteerAngle;
 
