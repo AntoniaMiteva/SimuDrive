@@ -1,20 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using System.Collections;
 
 public class StartDrive1 : MonoBehaviour
 {
-    [SerializeField] private GameObject step1;
-    [SerializeField] private GameObject step2;
-    [SerializeField] private GameObject step3;
-    [SerializeField] private GameObject step4;
-    [SerializeField] private GameObject stepClutchProblem;
     [SerializeField] private CarController carController; // Reference to the CarController
+    [SerializeField] private TextMeshProUGUI textMeshProUGUI; // Reference to the Text UI
+    [SerializeField] private GameObject panelProblem;
+    [SerializeField] private GameObject panelDone;
 
     private float clutchInput;
     private float acceleratorInput;
-
-    private float previousClutchInput; // Track previous clutch input for smooth release check
+    private float previousClutchInput; // Track previous clutch input
     private float clutchReleaseThreshold = 0.5f; // Threshold for smooth release
 
     private enum StepState { Step1, Step2, Step3, Step4, Completed }
@@ -22,11 +19,9 @@ public class StartDrive1 : MonoBehaviour
 
     void Start()
     {
-        step1.SetActive(true);
-        step2.SetActive(false);
-        step3.SetActive(false);
-        step4.SetActive(false);
-        stepClutchProblem.SetActive(false);
+        panelProblem.SetActive(false);
+        panelDone.SetActive(false);
+        textMeshProUGUI.text = "Натисни съединителя. (Най-левия педал)";
     }
 
     void Update()
@@ -37,97 +32,84 @@ public class StartDrive1 : MonoBehaviour
         // Debugging logs
         Debug.Log("Clutch Input: " + clutchInput);
         Debug.Log("Car Speed: " + carController.Speed);
+        Debug.Log("Current Step: " + currentStep);
 
+        previousClutchInput = clutchInput; // Update previous clutch input each frame
+
+        // Warning message for clutch
         if (carController.Speed <= 5f && carController.Gear == 1 && !(clutchInput >= 0.2f || Input.GetKey(KeyCode.LeftShift)))
         {
-            stepClutchProblem.SetActive(true); // Show warning
+            panelProblem.SetActive(true);
+            Time.timeScale = 0f;
         }
         else
         {
-            stepClutchProblem.SetActive(false); // Hide warning
+            panelProblem.SetActive(false);
+            Time.timeScale = 1f;
         }
 
-
+        // Step-based instructions
         switch (currentStep)
         {
             case StepState.Step1:
-                if (clutchInput > 0.8f || Input.GetKeyDown(KeyCode.LeftShift))
+                while (true)
                 {
-                    step1.SetActive(false);
-                    step2.SetActive(true);
-                    currentStep = StepState.Step2;
+                    if (clutchInput > 0.5f || Input.GetKeyDown(KeyCode.LeftShift))
+                    {
+                        textMeshProUGUI.text = "Превключете на първа скорост, като придърпате скоростния лост към тялото Ви и след това нагоре.";
+                        currentStep = StepState.Step2;
+                        break;
+                    }
+                    else
+                    {
+                        textMeshProUGUI.text = "Натисни съединителя. (Най-левия педал)";
+                    }
                 }
+
                 break;
 
+
             case StepState.Step2:
-                if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
+                if ((carController.Gear == 1 || Input.GetKeyDown(KeyCode.Alpha1)) && Time.timeScale != 0f)
                 {
-                    if (carController.Gear == 1 || Input.GetKeyDown(KeyCode.Alpha1))
-                    {
-                        step2.SetActive(false);
-                        step3.SetActive(true);
-                        currentStep = StepState.Step3;
-                    }
+                    textMeshProUGUI.text = "Подайте леко и внимателно газ. (Най-десния педал)";
+                    currentStep = StepState.Step3;
+                    Debug.Log("Step 2 Complete - First Gear Engaged.");
                 }
                 break;
 
             case StepState.Step3:
-                if (acceleratorInput > 0.1f || Input.GetKeyDown(KeyCode.UpArrow))
+                if ((acceleratorInput > 0.1f || Input.GetKeyDown(KeyCode.UpArrow)) && Time.timeScale != 0f)
                 {
-                    step3.SetActive(false);
-                    step4.SetActive(true);
+                    textMeshProUGUI.text = "Когато колата потегли, внимателно и плавно вдигнете крака си от педала на съединителя.";
                     currentStep = StepState.Step4;
+                    Debug.Log("Step 3 Complete - Accelerating.");
                 }
                 break;
 
             case StepState.Step4:
-                // Check if clutch is almost fully released and speed is above 5
-                if ((clutchInput < 0.2f || Input.GetKeyUp(KeyCode.LeftShift)) && carController.Speed > 5f) // Speed above 5
+                if (((clutchInput < 0.2f || Input.GetKeyUp(KeyCode.LeftShift)) && carController.Speed > 5f) && Time.timeScale != 0f)
                 {
-                    if (IsClutchReleasedSmoothly())
-                    {
-                        // Step 4 completed successfully
-                        step4.SetActive(false);
-                        currentStep = StepState.Completed;
-                        Debug.Log("Step 4 completed: Clutch released smoothly and speed is above 5!");
-                    }
-                    else
-                    {
-                        // Clutch was released too quickly, show a warning
-                        Debug.LogWarning("Release the clutch more carefully!");
-                    }
+                    textMeshProUGUI.text = "Съединителят е махнат плавно.";
+                    currentStep = StepState.Completed;
+                    StartCoroutine(ShowCompletionPanel());
                 }
-                else if (carController.Speed <= 5f)
-                {
-                    // Car speed is not above 5, show a warning
-                    Debug.LogWarning("Car speed must be above 5 to complete Step 4.");
-                }
-                break;
-
-            case StepState.Completed:
-                // All steps completed
                 break;
         }
     }
 
+    private IEnumerator ShowCompletionPanel()
+    {
+        yield return new WaitForSeconds(5f);
+        panelDone.SetActive(true);
+        Time.timeScale = 0f; // Pause the game
+        Debug.Log("All steps completed successfully!");
+    }
 
-
-
-    // Helper method to check if the clutch is released smoothly
+    // Check if clutch is released smoothly
     private bool IsClutchReleasedSmoothly()
     {
-        // Calculate the rate of clutch release
         float clutchReleaseRate = previousClutchInput - clutchInput;
-
-        // Update the previous clutch input for the next frame
-        previousClutchInput = clutchInput;
-
-        // If the release rate is too high, the clutch was released too quickly
-        if (clutchReleaseRate > clutchReleaseThreshold)
-        {
-            return false; // Clutch was released too quickly
-        }
-
-        return true; // Clutch was released smoothly
+        return clutchReleaseRate <= clutchReleaseThreshold;
     }
 }
