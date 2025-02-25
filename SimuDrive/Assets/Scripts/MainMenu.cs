@@ -16,9 +16,9 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("Instructions Menu");
     }
 
-    public void OptionsButton()
+    public void SettingsButton()
     {
-        SceneManager.LoadScene("Options Menu");
+        SceneManager.LoadScene("Settings Menu");
     }
 
     public void FlyersButton()

@@ -370,6 +370,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe53a3c9188609b45a6d8db320b41aa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myMixer: {fileID: 0}
+  musicSlider: {fileID: 0}
 --- !u!1 &374223335
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,7 +505,7 @@ GameObject:
   - component: {fileID: 1041497742}
   - component: {fileID: 1041497741}
   m_Layer: 5
-  m_Name: Keyboard (2)
+  m_Name: JoystickText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -525,7 +527,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 5, y: -347}
+  m_AnchoredPosition: {x: 5, y: -430}
   m_SizeDelta: {x: 1800, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1041497741
@@ -554,7 +556,7 @@ MonoBehaviour:
     - \u0414\u0435\u0441\u0435\u043D \u043F\u0435\u0434\u0430\u043B\n\u041A\u043E\u0440\u043C\u0438\u043B\u043E
     - \u0412\u043E\u043B\u0430\u043D\n\u041C\u0438\u0433\u0430\u0447\u0438 \u043B\u044F\u0432/\u0434\u0435\u0441\u0435\u043D
     - \u0411\u0443\u0442\u043E\u043D\u0438 \u0437\u0430\u0434 \u0432\u043E\u043B\u0430\u043D\n\u0420\u044A\u0447\u043D\u0430
-    \u0441\u043F\u0438\u0440\u0430\u0447\u043A\u0430 - \u0412\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u0438:"
+    \u0441\u043F\u0438\u0440\u0430\u0447\u043A\u0430 - \u0412\n\n\n\n\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u0438:"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
   m_sharedMaterial: {fileID: -2937116658433709983, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
@@ -645,7 +647,7 @@ GameObject:
   - component: {fileID: 1228299009}
   - component: {fileID: 1228299008}
   m_Layer: 5
-  m_Name: Image
+  m_Name: GearImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -720,7 +722,7 @@ GameObject:
   - component: {fileID: 1279317613}
   - component: {fileID: 1279317612}
   m_Layer: 5
-  m_Name: Keyboard (1)
+  m_Name: KeyboardText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -742,7 +744,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -890, y: -484}
+  m_AnchoredPosition: {x: -920, y: -484}
   m_SizeDelta: {x: 1800, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1279317612
@@ -771,13 +773,14 @@ MonoBehaviour:
     \u043D\u0430\u0433\u043E\u0440\u0435\n\u041A\u043E\u0440\u043C\u0438\u043B\u043E
     - \u0421\u0442\u0440\u0435\u043B\u043A\u0430 \u043D\u0430\u043B\u044F\u0432\u043E/\u043D\u0430\u0434\u044F\u0441\u043D\u043E\n\u041C\u0438\u0433\u0430\u0447\u0438
     \u043B\u044F\u0432/\u0434\u0435\u0441\u0435\u043D - A/D\n\u0420\u044A\u0447\u043D\u0430
-    \u0441\u043F\u0438\u0440\u0430\u0447\u043A\u0430 - \u0412\n\u041F\u044A\u0440\u0432\u0430
+    \u0441\u043F\u0438\u0440\u0430\u0447\u043A\u0430 - \u0412\n\u041D\u0435\u0443\u0442\u0440\u0430\u043B\u043D\u0430
+    \u0441\u043A\u043E\u0440\u043E\u0441\u0442 - 0\n\u041F\u044A\u0440\u0432\u0430
     \u0441\u043A\u043E\u0440\u043E\u0441\u0442 - 1\n\u0412\u0442\u043E\u0440\u0430
     \u0441\u043A\u043E\u0440\u043E\u0441\u0442 - 2\n\u0422\u0440\u0435\u0442\u0430
     \u0441\u043A\u043E\u0440\u043E\u0441\u0442 - 3\n\u0427\u0435\u0442\u0432\u044A\u0440\u0442\u0430
     \u0441\u043A\u043E\u0440\u043E\u0441\u0442 - 4\n\u041F\u0435\u0442\u0430 \u0441\u043A\u043E\u0440\u043E\u0441\u0442
     - 5\n\u0417\u0430\u0434\u043D\u0430 \u0441\u043A\u043E\u0440\u043E\u0441\u0442
-    - R\n\u0421\u0432\u043E\u0431\u043E\u0434\u043D\u0430 - 0"
+    - R"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
   m_sharedMaterial: {fileID: -2937116658433709983, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
@@ -890,7 +893,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -74.64}
+  m_AnchoredPosition: {x: 0, y: -70}
   m_SizeDelta: {x: 1800, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1311880952
@@ -913,7 +916,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: _______________________________________
+  m_text: __________________________
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
   m_sharedMaterial: {fileID: -2937116658433709983, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
@@ -1163,8 +1166,8 @@ RectTransform:
   - {fileID: 1878522406}
   - {fileID: 1603355713}
   - {fileID: 1279317611}
-  - {fileID: 1041497740}
   - {fileID: 1515012981}
+  - {fileID: 1041497740}
   - {fileID: 1228299007}
   - {fileID: 2144174588}
   m_Father: {fileID: 333451489}
@@ -1224,7 +1227,7 @@ GameObject:
   - component: {fileID: 1515012983}
   - component: {fileID: 1515012982}
   m_Layer: 5
-  m_Name: Joystick
+  m_Name: JoystickTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1246,7 +1249,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -21, y: -200}
+  m_AnchoredPosition: {x: 0, y: -200}
   m_SizeDelta: {x: 1800, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1515012982
@@ -1360,7 +1363,7 @@ GameObject:
   - component: {fileID: 1603355715}
   - component: {fileID: 1603355714}
   m_Layer: 5
-  m_Name: Keyboard
+  m_Name: KeyboardTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1382,7 +1385,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -984, y: -200}
+  m_AnchoredPosition: {x: -1000, y: -200}
   m_SizeDelta: {x: 1800, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1603355714
@@ -1575,7 +1578,7 @@ GameObject:
   - component: {fileID: 1878522408}
   - component: {fileID: 1878522407}
   m_Layer: 5
-  m_Name: line
+  m_Name: MiddleLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1597,7 +1600,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -37.29, y: -547}
+  m_AnchoredPosition: {x: -37, y: -550}
   m_SizeDelta: {x: 1800, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1878522407
@@ -1620,7 +1623,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ________________________________
+  m_text: __________________________________
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
   m_sharedMaterial: {fileID: -2937116658433709983, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}

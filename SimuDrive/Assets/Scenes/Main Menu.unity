@@ -964,7 +964,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u041E\u043F\u0446\u0438\u0438"
+  m_text: "\u041D\u0430\u0441\u0442\u0440\u043E\u0438\u0439\u043A\u0438"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
   m_sharedMaterial: {fileID: -2937116658433709983, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
@@ -2963,7 +2963,7 @@ GameObject:
   - component: {fileID: 1498825249}
   - component: {fileID: 1498825248}
   m_Layer: 0
-  m_Name: OptionsButton
+  m_Name: SettingsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3058,7 +3058,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2124949623}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: OptionsButton
+        m_MethodName: SettingsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4396,14 +4396,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.68956214, g: 0.71380407, b: 0.79622644, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cabee9395c26daa44a38a9adf9232a6a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4ad118383988d32449682fd596df9374, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
