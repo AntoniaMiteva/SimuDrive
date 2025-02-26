@@ -29,6 +29,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Start-Up-1.unity
     guid: 538e66566d9c9dd459d463fd6c52491c
+  - enabled: 1
+    path: Assets/Scenes/ChangeGears-1.unity
+    guid: 37f7ab127ceafbe4ead10c31a154d105
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 82dcbd6690e19324086f4245444d021d, type: 3}
   m_UseUCBPForAssetBundles: 0
