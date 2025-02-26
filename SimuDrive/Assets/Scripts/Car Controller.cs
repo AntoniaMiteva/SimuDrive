@@ -394,4 +394,12 @@ public class CarController : MonoBehaviour
         get { return gear; } // Gear is the private field in your CarController
     }
 
+    public void StopCar()
+    {
+        speed = 0f; // Set the speed to 0
+                    // Optionally, you can also set the car gear to neutral if needed:
+        gear = 0;
+        breakForce = 100000f;
+    }
+
 }

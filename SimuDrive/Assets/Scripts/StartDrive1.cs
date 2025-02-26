@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+
 
 public class StartDrive1 : MonoBehaviour
 {
@@ -85,7 +87,11 @@ public class StartDrive1 : MonoBehaviour
                     {
                         textMeshProUGUI.text = "Съединителят е махнат плавно.";
                         currentStep = StepState.Completed;
-                        StartCoroutine(ShowCompletionPanel());
+                        carController.enabled = false;
+                        Time.timeScale = 0f;
+                        panelDone.SetActive(true);
+                        panelProblem.SetActive(false);
+                        textMeshProUGUI.text = "";
                     }
                     else
                     {
@@ -96,13 +102,6 @@ public class StartDrive1 : MonoBehaviour
 
 
         }
-    }
-
-    private IEnumerator ShowCompletionPanel()
-    {
-        yield return new WaitForSeconds(5f);
-        panelDone.SetActive(true);
-        Time.timeScale = 0f;
     }
 
     public void BackToStart()
