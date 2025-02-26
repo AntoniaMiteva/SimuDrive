@@ -17,15 +17,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Instructions Menu.unity
     guid: 342e4dd50f08e8e47aeac2ef5b9fa3b3
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Flyers Menu.unity
     guid: 25ca98d32e539074f85819ac4f62c5e5
   - enabled: 1
     path: Assets/Scenes/Settings Menu.unity
     guid: 2ff689b1f045ebf46b81d674464c63ea
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/StartDriveScene.unity
     guid: 0d0d25fe709582745b8482b9a3bb4163
+  - enabled: 1
+    path: Assets/Scenes/Start-Up-1.unity
+    guid: 538e66566d9c9dd459d463fd6c52491c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 82dcbd6690e19324086f4245444d021d, type: 3}
   m_UseUCBPForAssetBundles: 0

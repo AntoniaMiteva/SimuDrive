@@ -2770,7 +2770,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1992542617}
         m_TargetAssemblyTypeName: DriveMenu, Assembly-CSharp
-        m_MethodName: StartUpButton
+        m_MethodName: StartUp1
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

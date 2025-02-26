@@ -59,7 +59,7 @@ public class CarController : MonoBehaviour
     public float Speed { get; private set; }
     private Rigidbody rb;
 
-    private bool isSteeringWheelConnected = false;
+    public bool isSteeringWheelConnected = false;
 
     [SerializeField] private float[] gearSpeedLimits = new float[] { 0f, 20f, 40f, 60f, 80f, 100f }; // Speed limits for each gear (0: Neutral, 1-5: Gears, -1: Reverse)
     private void Awake()
