@@ -1,68 +1,123 @@
 using TMPro;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
-
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class StartDrive1 : MonoBehaviour
 {
-    [SerializeField] private CarController carController; 
+    [SerializeField] private CarController carController;
     [SerializeField] private TextMeshProUGUI textMeshProUGUI;
     [SerializeField] private GameObject panelProblem;
     [SerializeField] private GameObject panelDone;
+    [SerializeField] private Button backButton; // Reference to your button
 
     private float clutchInput;
     private float acceleratorInput;
     private float previousClutchInput;
-    private float clutchReleaseThreshold = 0.5f;
+    private bool levelCompleted = false;
 
     private enum StepState { Step1, Step2, Step3, Step4, Completed }
     private StepState currentStep = StepState.Step1;
 
     void Start()
     {
+        // Make sure cursor is visible and free
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        // Ensure we have active panels in the expected state
         panelProblem.SetActive(false);
         panelDone.SetActive(false);
+
+        // Set initial instruction
         textMeshProUGUI.text = "Натиснете съединителя до долу.";
+
+        // Check if EventSystem exists
+        if (FindObjectOfType<EventSystem>() == null)
+        {
+            Debug.LogError("No EventSystem found in the scene. UI interactions will not work!");
+            // Create one if missing
+            GameObject eventSystem = new GameObject("EventSystem");
+            eventSystem.AddComponent<EventSystem>();
+            eventSystem.AddComponent<StandaloneInputModule>();
+        }
+
+        // Setup button manually - don't rely on Inspector
+        if (backButton != null)
+        {
+            backButton.onClick.RemoveAllListeners(); // Clear any existing listeners
+            backButton.onClick.AddListener(ManualBackToStart);
+            Debug.Log("Back button listener set up");
+        }
+        else
+        {
+            // Try to find button in the panel
+            Button[] buttons = panelDone.GetComponentsInChildren<Button>(true);
+            if (buttons.Length > 0)
+            {
+                backButton = buttons[0];
+                backButton.onClick.RemoveAllListeners();
+                backButton.onClick.AddListener(ManualBackToStart);
+                Debug.Log("Found and set up back button: " + backButton.name);
+            }
+            else
+            {
+                Debug.LogError("No buttons found in panelDone!");
+            }
+        }
     }
 
     void Update()
     {
-        clutchInput = Input.GetAxis("Clutch");
-        acceleratorInput = Input.GetAxis("Accelerator");
-
-
-        previousClutchInput = clutchInput; 
-
-        if (carController.Speed <= 5f && carController.Gear == 1 && !(clutchInput >= 0.2f || Input.GetKey(KeyCode.LeftShift)))
+        // Don't process inputs if level is completed
+        if (!levelCompleted)
         {
-            panelProblem.SetActive(true);
-            Time.timeScale = 0f;
-        }
-        else
-        {
-            panelProblem.SetActive(false);
-            Time.timeScale = 1f;
+            clutchInput = Input.GetAxis("Clutch");
+            acceleratorInput = Input.GetAxis("Accelerator");
+            previousClutchInput = clutchInput;
+
+            // Only check for stall if panel not shown
+            if (panelDone.activeSelf == false)
+            {
+                if (carController.Speed <= 5f && carController.Gear == 1 && !(clutchInput >= 0.2f || Input.GetKey(KeyCode.LeftShift)))
+                {
+                    panelProblem.SetActive(true);
+                    Time.timeScale = 0f;
+                }
+                else
+                {
+                    panelProblem.SetActive(false);
+                    Time.timeScale = 1f;
+                }
+            }
+
+            ProcessSteps();
         }
 
+        // Emergency exit always available
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("Escape key pressed - returning to menu");
+            SceneManager.LoadScene("Drive Menu");
+        }
+    }
+
+    private void ProcessSteps()
+    {
         switch (currentStep)
         {
             case StepState.Step1:
+                if (clutchInput > 0.5f || Input.GetKey(KeyCode.LeftShift))
                 {
-                    if (clutchInput > 0.5f || Input.GetKeyDown(KeyCode.LeftShift))
-                    {
-                        textMeshProUGUI.text = "Превключете на първа скорост, като придърпате скоростния лост към тялото Ви и след това нагоре.";
-                        currentStep = StepState.Step2;
-                    }
-                    else
-                    {
-                        textMeshProUGUI.text = "Натиснете съединителя до долу.";
-                    }
-
+                    textMeshProUGUI.text = "Превключете на първа скорост, като придърпате скоростния лост към тялото Ви и след това нагоре.";
+                    currentStep = StepState.Step2;
+                }
+                else
+                {
+                    textMeshProUGUI.text = "Натиснете съединителя до долу.";
                 }
                 break;
-
 
             case StepState.Step2:
                 if ((carController.Gear == 1 || Input.GetKeyDown(KeyCode.Alpha1)) && Time.timeScale != 0f)
@@ -85,13 +140,7 @@ public class StartDrive1 : MonoBehaviour
                 {
                     if ((carController.isSteeringWheelConnected && clutchInput < 0.2f) || Input.GetKeyUp(KeyCode.LeftShift))
                     {
-                        textMeshProUGUI.text = "Съединителят е махнат плавно.";
-                        currentStep = StepState.Completed;
-                        carController.enabled = false;
-                        Time.timeScale = 0f;
-                        panelDone.SetActive(true);
-                        panelProblem.SetActive(false);
-                        textMeshProUGUI.text = "";
+                        CompleteLevel();
                     }
                     else
                     {
@@ -99,13 +148,64 @@ public class StartDrive1 : MonoBehaviour
                     }
                 }
                 break;
-
-
         }
     }
 
+    private void CompleteLevel()
+    {
+        Debug.Log("Level completed - showing completion panel");
+
+        // Mark level as completed
+        levelCompleted = true;
+
+        // Update text and disable car controller
+        textMeshProUGUI.text = "Съединителят е махнат плавно.";
+        carController.enabled = false;
+
+        // Important: Keep time running for UI interactions
+        Time.timeScale = 1f;
+
+        // Set cursor state
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        // Hide text after showing panel
+        StartCoroutine(ShowCompletionPanel());
+    }
+
+    private System.Collections.IEnumerator ShowCompletionPanel()
+    {
+        // Small delay to ensure text is seen
+        yield return new WaitForSeconds(0.5f);
+
+        // Show completion panel
+        panelDone.SetActive(true);
+        panelProblem.SetActive(false);
+        textMeshProUGUI.text = "";
+
+        Debug.Log("Completion panel activated");
+
+        // Make sure button is interactive
+        if (backButton != null)
+        {
+            backButton.interactable = true;
+        }
+    }
+
+    // Method called directly by button
     public void BackToStart()
     {
+        Debug.Log("BackToStart called from UI event");
+        ManualBackToStart();
+    }
+
+    // Alternative method called programmatically
+    public void ManualBackToStart()
+    {
+        Debug.Log("Returning to menu");
+        Time.timeScale = 1f;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         SceneManager.LoadScene("Drive Menu");
     }
 }
