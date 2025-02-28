@@ -10,6 +10,7 @@ public class StartDrive1 : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textMeshProUGUI;
     [SerializeField] private GameObject panelProblem;
     [SerializeField] private GameObject panelDone;
+    [SerializeField] private GameObject panelInstruction;
     [SerializeField] private Button backButton; // Reference to your button
 
     private float clutchInput;
@@ -22,22 +23,19 @@ public class StartDrive1 : MonoBehaviour
 
     void Start()
     {
-        // Make sure cursor is visible and free
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        // Ensure we have active panels in the expected state
         panelProblem.SetActive(false);
         panelDone.SetActive(false);
+        panelInstruction.SetActive(true);
 
-        // Set initial instruction
+        
         textMeshProUGUI.text = "Натиснете съединителя до долу.";
 
         // Check if EventSystem exists
         if (FindObjectOfType<EventSystem>() == null)
         {
-            Debug.LogError("No EventSystem found in the scene. UI interactions will not work!");
-            // Create one if missing
             GameObject eventSystem = new GameObject("EventSystem");
             eventSystem.AddComponent<EventSystem>();
             eventSystem.AddComponent<StandaloneInputModule>();
@@ -46,38 +44,30 @@ public class StartDrive1 : MonoBehaviour
         // Setup button manually - don't rely on Inspector
         if (backButton != null)
         {
-            backButton.onClick.RemoveAllListeners(); // Clear any existing listeners
+            backButton.onClick.RemoveAllListeners();
             backButton.onClick.AddListener(ManualBackToStart);
-            Debug.Log("Back button listener set up");
         }
         else
         {
-            // Try to find button in the panel
+            
             Button[] buttons = panelDone.GetComponentsInChildren<Button>(true);
             if (buttons.Length > 0)
             {
                 backButton = buttons[0];
                 backButton.onClick.RemoveAllListeners();
                 backButton.onClick.AddListener(ManualBackToStart);
-                Debug.Log("Found and set up back button: " + backButton.name);
-            }
-            else
-            {
-                Debug.LogError("No buttons found in panelDone!");
             }
         }
     }
 
     void Update()
     {
-        // Don't process inputs if level is completed
         if (!levelCompleted)
         {
             clutchInput = Input.GetAxis("Clutch");
             acceleratorInput = Input.GetAxis("Accelerator");
             previousClutchInput = clutchInput;
 
-            // Only check for stall if panel not shown
             if (panelDone.activeSelf == false)
             {
                 if (carController.Speed <= 5f && carController.Gear == 1 && !(clutchInput >= 0.2f || Input.GetKey(KeyCode.LeftShift)))
@@ -95,12 +85,6 @@ public class StartDrive1 : MonoBehaviour
             ProcessSteps();
         }
 
-        // Emergency exit always available
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Debug.Log("Escape key pressed - returning to menu");
-            SceneManager.LoadScene("Drive Menu");
-        }
     }
 
     private void ProcessSteps()
@@ -140,7 +124,9 @@ public class StartDrive1 : MonoBehaviour
                 {
                     if ((carController.isSteeringWheelConnected && clutchInput < 0.2f) || Input.GetKeyUp(KeyCode.LeftShift))
                     {
+                        
                         CompleteLevel();
+                        panelInstruction.SetActive(false);
                     }
                     else
                     {
