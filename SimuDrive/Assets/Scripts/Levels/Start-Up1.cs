@@ -30,7 +30,7 @@ public class StartDrive1 : MonoBehaviour
         panelDone.SetActive(false);
         panelInstruction.SetActive(true);
 
-        
+
         textMeshProUGUI.text = "Натиснете съединителя до долу.";
 
         // Check if EventSystem exists
@@ -49,7 +49,7 @@ public class StartDrive1 : MonoBehaviour
         }
         else
         {
-            
+
             Button[] buttons = panelDone.GetComponentsInChildren<Button>(true);
             if (buttons.Length > 0)
             {
@@ -124,7 +124,7 @@ public class StartDrive1 : MonoBehaviour
                 {
                     if ((carController.isSteeringWheelConnected && clutchInput < 0.2f) || Input.GetKeyUp(KeyCode.LeftShift))
                     {
-                        
+
                         CompleteLevel();
                         panelInstruction.SetActive(false);
                     }
