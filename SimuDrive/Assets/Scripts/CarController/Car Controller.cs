@@ -62,6 +62,10 @@ public class CarController : MonoBehaviour
     public bool isSteeringWheelConnected = false;
 
     [SerializeField] private float[] gearSpeedLimits = new float[] { 0f, 20f, 40f, 60f, 80f, 100f }; // Speed limits for each gear (0: Neutral, 1-5: Gears, -1: Reverse)
+
+    [SerializeField] private float slopeForce = 500f;
+    private bool isManualBrake = false; // Manual brake state
+
     private void Awake()
     {
         if (inputActions == null)
@@ -135,14 +139,13 @@ public class CarController : MonoBehaviour
         HandleSteering(); // Handle steering
         UpdateWheels(); // Update visual wheel positions
         CalculateSpeed(); // Calculate and log speed
-	CalculateRPM(); // Calculate RPM based on speed and gear
+        CalculateRPM(); // Calculate RPM based on speed and gear
+        HandleSlope(); // Handle slope forces
         Debug.Log("Speed: " + speed + " km/h, Gear: " + gear + ", RPM: " + currentRPM);
-
     }
 
     private void Update()
     {
-
         if (isGear) // Only allow gear change when clutch is pressed
         {
             if (gear1Action.triggered || Input.GetKeyDown(KeyCode.Alpha1)) gear = 1;
@@ -151,11 +154,15 @@ public class CarController : MonoBehaviour
             else if (gear4Action.triggered || Input.GetKeyDown(KeyCode.Alpha4)) gear = 4;
             else if (gear5Action.triggered || Input.GetKeyDown(KeyCode.Alpha5)) gear = 5;
             else if (gearRAction.triggered || Input.GetKeyDown(KeyCode.R)) gear = -1;
-
-            //Debug.Log("Gear changed to: " + gear);
         }
 
-        Speed = rb.linearVelocity.magnitude; // Fix: Change linearVelocity to velocity
+        // Manual brake input
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            isManualBrake = !isManualBrake;
+        }
+
+        Speed = rb.linearVelocity.magnitude; 
     }
 
 
@@ -208,27 +215,27 @@ public class CarController : MonoBehaviour
         {
             if (gear == 1 && speed <= gearSpeedLimits[1])
             {
-                motorForce = 300;
+                motorForce = 500;
             }
             else if (gear == 2 && speed >= 10f && speed <= gearSpeedLimits[2])
             {
-                motorForce = 500;
+                motorForce = 700;
             }
             else if (gear == 3 && speed >= 40f && speed <= gearSpeedLimits[3])
             {
-                motorForce = 700;
+                motorForce = 1000;
             }
             else if (gear == 4 && speed >= 60f && speed <= gearSpeedLimits[4])
             {
-                motorForce = 1000;
+                motorForce = 15500;
             }
             else if (gear == 5 && speed >= 80f && speed <= gearSpeedLimits[5])
             {
-                motorForce = 15500;
+                motorForce = 1550000;
             }
             else if (gear == -1 && speed <= 5f)
             {
-                motorForce = -300;
+                motorForce = -500;
             }
             else
             {
@@ -400,6 +407,24 @@ public class CarController : MonoBehaviour
                     // Optionally, you can also set the car gear to neutral if needed:
         gear = 0;
         breakForce = 100000f;
+    }
+
+    private void HandleSlope()
+    {
+        if (isManualBrake || isBreaking)
+        {
+            ApplyBreaking();
+        }
+        else
+        {
+            ReleaseBrakes();
+        }
+
+        // Apply additional force to prevent rolling back on slopes
+        if (verticalInput == 0 && gear == 1 && carRigidbody.linearVelocity.magnitude < 0.1f)
+        {
+            carRigidbody.AddForce(-transform.forward * slopeForce, ForceMode.Acceleration);
+        }
     }
 
 }
