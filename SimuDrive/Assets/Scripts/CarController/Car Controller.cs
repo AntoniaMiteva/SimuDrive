@@ -22,16 +22,16 @@ public class CarController : MonoBehaviour
     private bool isDrive = false;
 
     [SerializeField] private Rigidbody carRigidbody; // Assign this in the Inspector
-    private float speed;
+    public float speed;
 
     [SerializeField] public float motorForce = 0; // This will change with gears
     [SerializeField] private float breakForce;
     [SerializeField] private float maxSteerAngle;
 
-    [SerializeField] private WheelCollider frontLeftWheelColider;
-    [SerializeField] private WheelCollider frontRightWheelColider;
-    [SerializeField] private WheelCollider backLeftWheelColider;
-    [SerializeField] private WheelCollider backRightWheelColider;
+    [SerializeField] public WheelCollider frontLeftWheelColider;
+    [SerializeField] public WheelCollider frontRightWheelColider;
+    [SerializeField] public WheelCollider backLeftWheelColider;
+    [SerializeField] public WheelCollider backRightWheelColider;
 
     [SerializeField] private Transform frontLeftWheelTransform;
     [SerializeField] private Transform frontRightWheelTransform;
@@ -63,8 +63,8 @@ public class CarController : MonoBehaviour
 
     [SerializeField] private float[] gearSpeedLimits = new float[] { 0f, 20f, 40f, 60f, 80f, 100f }; // Speed limits for each gear (0: Neutral, 1-5: Gears, -1: Reverse)
 
-    [SerializeField] private float slopeForce = 500f;
-    private bool isManualBrake = false; // Manual brake state
+    [SerializeField] private float slopeForce = 100f;
+    public bool isManualBrake = false; // Manual brake state
 
     private void Awake()
     {
@@ -141,7 +141,7 @@ public class CarController : MonoBehaviour
         CalculateSpeed(); // Calculate and log speed
         CalculateRPM(); // Calculate RPM based on speed and gear
         HandleSlope(); // Handle slope forces
-        Debug.Log("Speed: " + speed + " km/h, Gear: " + gear + ", RPM: " + currentRPM);
+        Debug.Log("Speed: " + speed + " km/h, Gear: " + gear + ", RPM: " + currentRPM + ", ManualBreak: " + isManualBrake);
     }
 
     private void Update()
@@ -162,7 +162,12 @@ public class CarController : MonoBehaviour
             isManualBrake = !isManualBrake;
         }
 
-        Speed = rb.linearVelocity.magnitude; 
+        Speed = rb.linearVelocity.magnitude;
+
+        if (isManualBrake)
+        {
+            ApplyBreaking();
+        }
     }
 
 
@@ -215,27 +220,27 @@ public class CarController : MonoBehaviour
         {
             if (gear == 1 && speed <= gearSpeedLimits[1])
             {
-                motorForce = 500;
+                motorForce = 5000;
             }
             else if (gear == 2 && speed >= 10f && speed <= gearSpeedLimits[2])
             {
-                motorForce = 700;
+                motorForce = 1700;
             }
             else if (gear == 3 && speed >= 40f && speed <= gearSpeedLimits[3])
             {
-                motorForce = 1000;
+                motorForce = 11000;
             }
             else if (gear == 4 && speed >= 60f && speed <= gearSpeedLimits[4])
             {
-                motorForce = 15500;
+                motorForce = 115500;
             }
             else if (gear == 5 && speed >= 80f && speed <= gearSpeedLimits[5])
             {
-                motorForce = 1550000;
+                motorForce = 11550000;
             }
             else if (gear == -1 && speed <= 5f)
             {
-                motorForce = -500;
+                motorForce = -1500;
             }
             else
             {
@@ -266,69 +271,89 @@ public class CarController : MonoBehaviour
 
     private void HandleMotor()
     {
-        if (isStart && isDrive && gear != 0) // Ensure the car has started and a gear is engaged
+        if (isStart && isDrive && gear != 0)
         {
+            // Calculate base motor force
             float appliedMotorForce = verticalInput * motorForce * acceleratorSensitivity;
 
-            // Adjust motor force based on RPM
-            if (currentRPM > maxRPM * 0.9f) // Reduce force if RPM is too high
+            // Detect if we're on a slope
+            bool onSlope = IsOnSlope(out float slopeAngle);
+
+            // Add extra torque when starting on a slope
+            if (onSlope && speed < 5f && verticalInput > 0.1f)
             {
-                appliedMotorForce *= 0.5f;
-            }
-            else if (currentRPM < minRPM * 1.1f) // Reduce force if RPM is too low
-            {
-                appliedMotorForce *= 0.5f;
+                float slopeBoost = Mathf.Clamp(slopeAngle / 10f, 1f, 3f); // 1x-3x boost based on slope
+                appliedMotorForce *= slopeBoost;
             }
 
-            // Apply force to wheels only if accelerator is pressed
-            if (verticalInput > 0.1f)
+            // Release brakes when accelerating
+            if (verticalInput > 0.1f && !isManualBrake)
             {
-                frontLeftWheelColider.motorTorque = appliedMotorForce;
-                frontRightWheelColider.motorTorque = appliedMotorForce;
+                ReleaseBrakes();
             }
-            else
-            {
-                frontLeftWheelColider.motorTorque = 0f;
-                frontRightWheelColider.motorTorque = 0f;
-            }
+
+            // Apply force to wheels
+            frontLeftWheelColider.motorTorque = appliedMotorForce;
+            frontRightWheelColider.motorTorque = appliedMotorForce;
         }
         else
         {
             frontLeftWheelColider.motorTorque = 0f;
             frontRightWheelColider.motorTorque = 0f;
         }
+    }
 
-        // Apply braking force
-        cureenrBreakForce = isBreaking ? breakForce : 0f;
-        if (isBreaking)
+
+    public void ApplyBreaking()
+    {
+        // Only apply full brakes if not accelerating
+        if (Mathf.Abs(verticalInput) < 0.1f || isManualBrake)
         {
-            ApplyBreaking();
+            float effectiveBrakeForce = isManualBrake ?
+                breakForce * 10f :
+                breakForce;
+
+            frontLeftWheelColider.brakeTorque = effectiveBrakeForce;
+            frontRightWheelColider.brakeTorque = effectiveBrakeForce;
+            backLeftWheelColider.brakeTorque = effectiveBrakeForce;
+            backRightWheelColider.brakeTorque = effectiveBrakeForce;
         }
         else
         {
-            ReleaseBrakes();
+            // Light braking when accelerating on slopes to prevent rollback
+            if (IsOnSlope(out float angle) && angle > 10f)
+            {
+                float slopeBrake = Mathf.Clamp(angle * 10f, 0f, breakForce / 2f);
+                backLeftWheelColider.brakeTorque = slopeBrake;
+                backRightWheelColider.brakeTorque = slopeBrake;
+            }
         }
     }
 
-
-
-
-
-
-    private void ApplyBreaking()
-    {
-        frontLeftWheelColider.brakeTorque = cureenrBreakForce;
-        frontRightWheelColider.brakeTorque = cureenrBreakForce;
-        backLeftWheelColider.brakeTorque = cureenrBreakForce;
-        backRightWheelColider.brakeTorque = cureenrBreakForce;
-    }
-
-    private void ReleaseBrakes()
+    public void ReleaseBrakes()
     {
         frontLeftWheelColider.brakeTorque = 0f;
         frontRightWheelColider.brakeTorque = 0f;
         backLeftWheelColider.brakeTorque = 0f;
         backRightWheelColider.brakeTorque = 0f;
+    }
+
+    private void HandleSlopeStart()
+    {
+        if (IsOnSlope(out float slopeAngle) &&
+            gear != 0 &&
+            verticalInput > 0.1f &&
+            speed < 2f)
+        {
+            // Temporary torque boost for 1 second
+            float boostFactor = Mathf.Clamp(slopeAngle / 15f, 1f, 3f);
+            frontLeftWheelColider.motorTorque *= boostFactor;
+            frontRightWheelColider.motorTorque *= boostFactor;
+
+            // Reduce rear brakes slightly
+            backLeftWheelColider.brakeTorque *= 0.7f;
+            backRightWheelColider.brakeTorque *= 0.7f;
+        }
     }
 
     private void GetInput()
@@ -411,6 +436,40 @@ public class CarController : MonoBehaviour
 
     private void HandleSlope()
     {
+        // Detect if we're on a slope
+        if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit, 2f))
+        {
+            float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+
+            // If manual brake is on, apply maximum braking and return early
+            if (isManualBrake)
+            {
+                ApplyBreaking();
+                return; // Skip all other slope handling when manual brake is on
+            }
+
+            // Only apply slope forces if angle is significant and manual brake is off
+            if (slopeAngle > 5f && !isManualBrake)
+            {
+                // Calculate slope force direction (down the slope)
+                Vector3 slopeForceDirection = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
+
+                // Apply anti-rollback force when stationary or rolling backward
+                if ((gear == 1 || gear == -1) &&
+                    (carRigidbody.linearVelocity.magnitude < 0.5f ||
+                     Vector3.Dot(carRigidbody.linearVelocity, transform.forward) < 0))
+                {
+                    float antiRollForce = slopeAngle * carRigidbody.mass * 0.1f;
+                    carRigidbody.AddForce(-slopeForceDirection * antiRollForce, ForceMode.Force);
+                }
+
+                // Apply natural gravity force down the slope
+                float gravityForce = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * carRigidbody.mass * 9.81f;
+                carRigidbody.AddForce(slopeForceDirection * gravityForce, ForceMode.Force);
+            }
+        }
+
+        // Apply brakes if needed
         if (isManualBrake || isBreaking)
         {
             ApplyBreaking();
@@ -419,12 +478,16 @@ public class CarController : MonoBehaviour
         {
             ReleaseBrakes();
         }
-
-        // Apply additional force to prevent rolling back on slopes
-        if (verticalInput == 0 && gear == 1 && carRigidbody.linearVelocity.magnitude < 0.1f)
-        {
-            carRigidbody.AddForce(-transform.forward * slopeForce, ForceMode.Acceleration);
-        }
     }
 
+    private bool IsOnSlope(out float slopeAngle)
+    {
+        if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit, 2f))
+        {
+            slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+            return slopeAngle > 5f; // Only consider it a slope if >5 degrees
+        }
+        slopeAngle = 0f;
+        return false;
+    }
 }

@@ -19,6 +19,14 @@ public class DriveMenu : MonoBehaviour
     {
         SceneManager.LoadScene("Start-Up-1");
     }
+    public void StartUp2()
+    {
+        SceneManager.LoadScene("Start-Up-2");
+    }
+    public void StartUp3()
+    {
+        SceneManager.LoadScene("Start-Up-3");
+    }
 
     public void ChamgeGears1()
     {

@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class StartDrive2 : MonoBehaviour
+public class StartDrive3 : MonoBehaviour
 {
     [SerializeField] private CarController carController;
     [SerializeField] private TextMeshProUGUI textMeshProUGUI;
@@ -16,14 +16,15 @@ public class StartDrive2 : MonoBehaviour
     [SerializeField] private Button backButton;
     [SerializeField] private float maxWaitTime = 2f;
     [SerializeField] private float minMovementSpeed = 0.5f;
+    [SerializeField] private float downhillForce = 500f;
 
     private float clutchInput;
-    private float acceleratorInput;
     private float brakeInput;
     private bool levelCompleted = false;
     private float timeSinceBrakeRelease;
     private bool brakeReleased = false;
     private bool waitingTooLongWarningShown = false;
+    private float timeInStep6 = 0f;
 
     private enum StepState
     {
@@ -32,15 +33,13 @@ public class StartDrive2 : MonoBehaviour
         Step3,          // Press clutch
         Step4,          // Shift to 1st gear
         Step5,          // Release brake
-        Step6,          // Press accelerator
-        Step7,          // Release clutch as car moves
+        Step6,          // Release clutch as car moves
         Completed
     }
     private StepState currentStep = StepState.Step1;
 
     private bool isBrakePressed = false;
     private bool clutchWasPressed = false;
-    private bool acceleratorWasPressed = false;
     private bool carStartedMoving = false;
 
     void Start()
@@ -54,7 +53,7 @@ public class StartDrive2 : MonoBehaviour
         panelDone.SetActive(false);
         panelInstruction.SetActive(true);
 
-        textMeshProUGUI.text = "Натиснете спирачката (Space).";
+        textMeshProUGUI.text = "РќР°С‚РёСЃРЅРµС‚Рµ СЃРїРёСЂР°С‡РєР°С‚Р° (Space).";
 
         if (FindObjectOfType<EventSystem>() == null)
         {
@@ -80,6 +79,11 @@ public class StartDrive2 : MonoBehaviour
         }
 
         carController.isManualBrake = true;
+
+        if (carController.GetComponent<Rigidbody>() == null)
+        {
+            Debug.LogError("CarController is missing Rigidbody component!");
+        }
     }
 
     void Update()
@@ -97,12 +101,10 @@ public class StartDrive2 : MonoBehaviour
         if (!levelCompleted)
         {
             clutchInput = Input.GetAxis("Clutch");
-            acceleratorInput = Input.GetAxis("Accelerator");
             brakeInput = Input.GetAxis("Brake");
 
             isBrakePressed = brakeInput > 0.1f || Input.GetKey(KeyCode.Space);
 
-            // Auto-hide problem panels when corrected
             if (panelProblem.activeSelf && (clutchInput >= 0.2f || Input.GetKey(KeyCode.LeftShift)))
             {
                 panelProblem.SetActive(false);
@@ -120,7 +122,7 @@ public class StartDrive2 : MonoBehaviour
                 waitingTooLongWarningShown = false;
             }
 
-            if (brakeReleased && (currentStep == StepState.Step5 || currentStep == StepState.Step6) && !acceleratorWasPressed)
+            if (brakeReleased && currentStep == StepState.Step5)
             {
                 timeSinceBrakeRelease += Time.deltaTime;
                 if (timeSinceBrakeRelease > maxWaitTime && !waitingTooLongWarningShown)
@@ -132,21 +134,45 @@ public class StartDrive2 : MonoBehaviour
                 }
             }
 
-            if ((currentStep == StepState.Step5 || currentStep == StepState.Step6) && isBrakePressed)
+            if (currentStep == StepState.Step5 && isBrakePressed)
             {
                 brakeReleased = false;
                 timeSinceBrakeRelease = 0f;
                 panelProblem3.SetActive(false);
             }
 
-            if ((currentStep >= StepState.Step3 && currentStep <= StepState.Step7) &&
+            if ((currentStep >= StepState.Step3 && currentStep <= StepState.Step6) &&
                 clutchWasPressed && !(clutchInput >= 0.2f || Input.GetKey(KeyCode.LeftShift)) &&
                 carController.Speed <= 0.1f)
             {
                 panelProblem.SetActive(true);
             }
 
-            carStartedMoving = carController.Speed > minMovementSpeed;
+            // Downhill movement handling
+            if (currentStep == StepState.Step6)
+            {
+                timeInStep6 += Time.deltaTime;
+                
+                // Apply downhill force
+                Rigidbody rb = carController.GetComponent<Rigidbody>();
+                if (rb != null && carController.Gear == 1 && clutchInput < 0.7f)
+                {
+                    rb.AddForce(carController.transform.forward * downhillForce * Time.deltaTime);
+                }
+
+                // Fallback movement after delay
+                if (timeInStep6 > 1f && carController.Speed < minMovementSpeed && rb != null)
+                {
+                    rb.linearVelocity = carController.transform.forward * minMovementSpeed * 1.1f;
+                }
+
+                carStartedMoving = carController.Speed > minMovementSpeed;
+            }
+            else
+            {
+                carStartedMoving = carController.Speed > minMovementSpeed;
+                timeInStep6 = 0f;
+            }
 
             ProcessSteps();
         }
@@ -161,7 +187,7 @@ public class StartDrive2 : MonoBehaviour
             case StepState.Step1:
                 if (isBrakePressed)
                 {
-                    textMeshProUGUI.text = "Освободете ръчната спирачка (B).";
+                    textMeshProUGUI.text = "РћСЃРІРѕР±РѕРґРµС‚Рµ СЂСЉС‡РЅР°С‚Р° СЃРїРёСЂР°С‡РєР° (B).";
                     currentStep = StepState.Step2;
                 }
                 break;
@@ -170,12 +196,12 @@ public class StartDrive2 : MonoBehaviour
                 if (!isBrakePressed)
                 {
                     panelProblem2.SetActive(true);
-                    textMeshProUGUI.text = "Трябва да държите спирачката (Space) докато освобождавате ръчната спирачка (B).";
+                    textMeshProUGUI.text = "РўСЂСЏР±РІР° РґР° РґСЉСЂР¶РёС‚Рµ СЃРїРёСЂР°С‡РєР°С‚Р° (Space) РґРѕРєР°С‚Рѕ РѕСЃРІРѕР±РѕР¶РґР°РІР°С‚Рµ СЂСЉС‡РЅР°С‚Р° СЃРїРёСЂР°С‡РєР° (B).";
                 }
                 else if (Input.GetKeyUp(KeyCode.B))
                 {
                     panelProblem2.SetActive(false);
-                    textMeshProUGUI.text = "Натиснете съединителя (Left Shift).";
+                    textMeshProUGUI.text = "РќР°С‚РёСЃРЅРµС‚Рµ СЃСЉРµРґРёРЅРёС‚РµР»СЏ (Left Shift).";
                     carController.isManualBrake = false;
                     carController.ReleaseBrakes();
                     currentStep = StepState.Step3;
@@ -186,13 +212,13 @@ public class StartDrive2 : MonoBehaviour
                 if (!isBrakePressed)
                 {
                     panelProblem2.SetActive(true);
-                    textMeshProUGUI.text = "Трябва да държите спирачката (Space) докато натискате съединителя (Left Shift).";
+                    textMeshProUGUI.text = "РўСЂСЏР±РІР° РґР° РґСЉСЂР¶РёС‚Рµ СЃРїРёСЂР°С‡РєР°С‚Р° (Space) РґРѕРєР°С‚Рѕ РЅР°С‚РёСЃРєР°С‚Рµ СЃСЉРµРґРёРЅРёС‚РµР»СЏ (Left Shift).";
                 }
                 else if (clutchInput >= 0.2f || Input.GetKey(KeyCode.LeftShift))
                 {
                     clutchWasPressed = true;
                     panelProblem2.SetActive(false);
-                    textMeshProUGUI.text = "Превключете на първа скорост (1).";
+                    textMeshProUGUI.text = "РџСЂРµРІРєР»СЋС‡РµС‚Рµ РЅР° РїСЉСЂРІР° СЃРєРѕСЂРѕСЃС‚ (1).";
                     currentStep = StepState.Step4;
                 }
                 break;
@@ -201,12 +227,12 @@ public class StartDrive2 : MonoBehaviour
                 if (!isBrakePressed)
                 {
                     panelProblem2.SetActive(true);
-                    textMeshProUGUI.text = "Трябва да държите спирачката (Space) докато превключвате скоростта (1).";
+                    textMeshProUGUI.text = "РўСЂСЏР±РІР° РґР° РґСЉСЂР¶РёС‚Рµ СЃРїРёСЂР°С‡РєР°С‚Р° (Space) РґРѕРєР°С‚Рѕ РїСЂРµРІРєР»СЋС‡РІР°С‚Рµ СЃРєРѕСЂРѕСЃС‚С‚Р° (1).";
                 }
                 else if (carController.Gear == 1 || Input.GetKeyDown(KeyCode.Alpha1))
                 {
                     panelProblem2.SetActive(false);
-                    textMeshProUGUI.text = "Освободете спирачката (Space).";
+                    textMeshProUGUI.text = "РћСЃРІРѕР±РѕРґРµС‚Рµ СЃРїРёСЂР°С‡РєР°С‚Р° (Space).";
                     currentStep = StepState.Step5;
                 }
                 break;
@@ -214,7 +240,7 @@ public class StartDrive2 : MonoBehaviour
             case StepState.Step5:
                 if (isBrakePressed)
                 {
-                    textMeshProUGUI.text = "Трябва да освободите спирачката (Space).";
+                    textMeshProUGUI.text = "РўСЂСЏР±РІР° РґР° РѕСЃРІРѕР±РѕРґРёС‚Рµ СЃРїРёСЂР°С‡РєР°С‚Р° (Space).";
                     brakeReleased = false;
                     timeSinceBrakeRelease = 0f;
                     waitingTooLongWarningShown = false;
@@ -226,40 +252,22 @@ public class StartDrive2 : MonoBehaviour
                     carController.isManualBrake = false;
                     if (!waitingTooLongWarningShown)
                     {
-                        textMeshProUGUI.text = "Натиснете газта (Up Arrow).";
+                        textMeshProUGUI.text = "Р—Р°РїРѕС‡РЅРµС‚Рµ РґР° РѕС‚РїСѓСЃРєР°С‚Рµ СЃСЉРµРґРёРЅРёС‚РµР»СЏ (Left Shift) Р±Р°РІРЅРѕ...";
                         currentStep = StepState.Step6;
                     }
                 }
                 break;
 
             case StepState.Step6:
-                if (acceleratorInput > 0.1f || Input.GetKey(KeyCode.UpArrow))
-                {
-                    acceleratorWasPressed = true;
-                    brakeReleased = false;
-                    timeSinceBrakeRelease = 0f;
-                    waitingTooLongWarningShown = false;
-                    textMeshProUGUI.text = "Започнете да отпускате съединителя (Left Shift) бавно.";
-                    currentStep = StepState.Step7;
-                    carStartedMoving = false;
-                }
-                break;
-
-            case StepState.Step7:
                 bool isClutchReleased = (clutchInput < 0.3f && !Input.GetKey(KeyCode.LeftShift));
 
-                if (carStartedMoving && isClutchReleased)
+                float clutchProgress = Mathf.InverseLerp(1f, 0.3f, clutchInput);
+                textMeshProUGUI.text = $"РћС‚РїСѓСЃРЅРµС‚Рµ СЃСЉРµРґРёРЅРёС‚РµР»СЏ (Left Shift) {Mathf.RoundToInt(clutchProgress * 100)}%";
+
+                if ((clutchInput < 0.3f && !Input.GetKey(KeyCode.LeftShift)) && carController.Speed>5f)
                 {
                     CompleteLevel();
                     panelInstruction.SetActive(false);
-                }
-                else if (!carStartedMoving)
-                {
-                    textMeshProUGUI.text = "Държете газта (Up Arrow) и започнете да отпускате съединителя (Left Shift).";
-                }
-                else
-                {
-                    textMeshProUGUI.text = "Продължете да отпускате съединителя (Left Shift) плавно.";
                 }
                 break;
         }
@@ -269,20 +277,27 @@ public class StartDrive2 : MonoBehaviour
     {
         StartCoroutine(ShowCompletionPanel());
         levelCompleted = true;
-        textMeshProUGUI.text = "Съединителят е освободен плавно и колата потегли успешно.";
+        textMeshProUGUI.text = "РЎСЉРµРґРёРЅРёС‚РµР»СЏС‚ Рµ РѕСЃРІРѕР±РѕРґРµРЅ РїР»Р°РІРЅРѕ Рё РєРѕР»Р°С‚Р° РїРѕС‚РµРіР»Рё СѓСЃРїРµС€РЅРѕ.";
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
 
     private System.Collections.IEnumerator ShowCompletionPanel()
     {
+        // Stop the car
+        Rigidbody rb = carController.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
         yield return new WaitForSeconds(0.5f);
         panelDone.SetActive(true);
         panelProblem.SetActive(false);
         panelProblem2.SetActive(false);
         panelProblem3.SetActive(false);
         textMeshProUGUI.text = "";
-        carController.speed = 0;
         carController.enabled = false;
     }
 
@@ -292,16 +307,7 @@ public class StartDrive2 : MonoBehaviour
         brakeReleased = false;
         timeSinceBrakeRelease = 0f;
         waitingTooLongWarningShown = false;
-
-        if (currentStep != StepState.Step6)
-        {
-            currentStep = StepState.Step5;
-            textMeshProUGUI.text = "Освободете спирачката (Space).";
-        }
-        else
-        {
-            textMeshProUGUI.text = "Натиснете газта (Up Arrow).";
-        }
+        textMeshProUGUI.text = "РћСЃРІРѕР±РѕРґРµС‚Рµ СЃРїРёСЂР°С‡РєР°С‚Р° (Space).";
     }
 
     public void ManualBackToStart()
@@ -314,6 +320,6 @@ public class StartDrive2 : MonoBehaviour
 
     public void BackToLevel()
     {
-        SceneManager.LoadScene("Start-Up-2");
+        SceneManager.LoadScene("Start-Up-3");
     }
 }
