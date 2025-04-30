@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 
 public class CarController : MonoBehaviour
 {
@@ -132,7 +133,7 @@ public class CarController : MonoBehaviour
 	private void FixedUpdate()
 	{
 		GetInput();
-		UpdateGear(); // Update gear first
+		//UpdateGear(); // Update gear first
 		IsStarting(); // Check if the car should start
 		IsDriving();  // Check if the car should continue driving
 		HandleMotor(); // Apply motor force based on inputs
@@ -167,6 +168,59 @@ public class CarController : MonoBehaviour
 		if (isManualBrake)
 		{
 			ApplyBreaking();
+		}
+
+
+
+
+
+		switch (gear)
+		{
+			case 1:
+				if (speed <= gearSpeedLimits[1])
+					motorForce = 5000;
+				else
+					motorForce = 0;
+				break;
+
+			case 2:
+				if (speed >= gearSpeedLimits[1] && speed <= gearSpeedLimits[2])
+					motorForce = 1700;
+				else
+					motorForce = 0;
+				break;
+
+			case 3:
+				if (speed >= gearSpeedLimits[2] && speed <= gearSpeedLimits[3])
+					motorForce = 11000;
+				else
+					motorForce = 0;
+				break;
+
+			case 4:
+				if (speed >= gearSpeedLimits[3] && speed <= gearSpeedLimits[4])
+					motorForce = 115500;
+				else
+					motorForce = 0;
+				break;
+
+			case 5:
+				if (speed >= gearSpeedLimits[4] && speed <= gearSpeedLimits[5])
+					motorForce = 11550000;
+				else
+					motorForce = 0;
+				break;
+
+			case -1: // Reverse
+				if (speed <= 5f)
+					motorForce = -1500;
+				else
+					motorForce = 0;
+				break;
+
+			default: // Neutral or invalid
+				motorForce = 0;
+				break;
 		}
 	}
 
@@ -222,19 +276,19 @@ public class CarController : MonoBehaviour
 			{
 				motorForce = 5000;
 			}
-			else if (gear == 2 && speed >= 10f && speed <= gearSpeedLimits[2])
+			else if (gear == 2 && speed >= 5f && speed <= gearSpeedLimits[2])
 			{
 				motorForce = 1700;
 			}
-			else if (gear == 3 && speed >= 40f && speed <= gearSpeedLimits[3])
+			else if (gear == 3 && speed >= 20f && speed <= gearSpeedLimits[3])
 			{
 				motorForce = 11000;
 			}
-			else if (gear == 4 && speed >= 60f && speed <= gearSpeedLimits[4])
+			else if (gear == 4 && speed >= 40f && speed <= gearSpeedLimits[4])
 			{
 				motorForce = 115500;
 			}
-			else if (gear == 5 && speed >= 80f && speed <= gearSpeedLimits[5])
+			else if (gear == 5 && speed >= 60f && speed <= gearSpeedLimits[5])
 			{
 				motorForce = 11550000;
 			}
@@ -490,5 +544,17 @@ public class CarController : MonoBehaviour
 		}
 		slopeAngle = 0f;
 		return false;
+	}
+
+	public bool carCollided = false;
+	private void OnCollisionEnter(Collision collision)
+	{
+		Debug.Log("Collision with: " + collision.gameObject.name);
+
+		if (collision.gameObject.CompareTag("Obstacle"))
+		{
+			Debug.Log("OBSTACLE HIT (Collision)!");
+			carCollided = true;
+		}
 	}
 }

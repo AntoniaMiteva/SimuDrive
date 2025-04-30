@@ -1,9 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -14,29 +12,27 @@ public class ChangingGears2 : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI textMeshProUGUI;
 	[SerializeField] private GameObject panelProblem;
 	[SerializeField] private GameObject panelProblemSpeed;
+	[SerializeField] private GameObject panelProblem3; // Panel for obstacle collision
 	[SerializeField] private GameObject panelDone;
 	[SerializeField] private GameObject panelInstruction;
 	[SerializeField] private Button backButton;
+	[SerializeField] private Button restartButton;
 
 	[Header("Settings")]
 	[SerializeField] private float minSpeedForSecondGear = 10f;
-	[SerializeField] private float minSpeedForThirdGear = 30f;
+	[SerializeField] private float minSpeedForThirdGear = 20f;
+	[SerializeField] private float minSpeedForFourthGear = 30f;
+	[SerializeField] private float minSpeedForFifthGear = 40f;
 
-	// Private variables
 	private float clutchInput;
 	private float acceleratorInput;
 	private bool levelCompleted = false;
-	private char currentGear = '0';
 	private bool speedNotEnough = false;
 	private bool showingSpeedPanel = false;
 
 	private enum StepState
 	{
-		Step1,  // Press clutch
-		Step2,  // Shift to 1st
-		Step3,  // Accelerate and shift to 2nd
-		Step4,  // Accelerate and shift to 3rd
-		Completed
+		Step1, Step2, Step3, Step4, Step5, Step6, Step7, Completed
 	}
 	private StepState currentStep = StepState.Step1;
 
@@ -45,6 +41,7 @@ public class ChangingGears2 : MonoBehaviour
 		InitializeUI();
 		SetupEventSystem();
 		SetupBackButton();
+		SetupRestartButton();
 	}
 
 	void InitializeUI()
@@ -54,6 +51,7 @@ public class ChangingGears2 : MonoBehaviour
 
 		panelProblem.SetActive(false);
 		panelProblemSpeed.SetActive(false);
+		panelProblem3.SetActive(false); // Initially hide the panel for obstacle collision
 		panelDone.SetActive(false);
 		panelInstruction.SetActive(true);
 
@@ -85,6 +83,15 @@ public class ChangingGears2 : MonoBehaviour
 		}
 	}
 
+	void SetupRestartButton()
+	{
+		if (restartButton != null)
+		{
+			restartButton.onClick.RemoveAllListeners();
+			restartButton.onClick.AddListener(RestartLevel);
+		}
+	}
+
 	void Update()
 	{
 		if (levelCompleted) return;
@@ -92,6 +99,20 @@ public class ChangingGears2 : MonoBehaviour
 		GetInputs();
 		HandlePanels();
 		ProcessSteps();
+
+		if(carController.carCollided)
+		{
+			panelProblem3.SetActive(true);
+			panelProblem.SetActive(false);
+			panelProblemSpeed.SetActive(false);
+			carController.enabled = false;
+			Time.timeScale = 1f;
+		}
+		else
+		{
+			panelProblem3.SetActive(false);
+			Time.timeScale = 1f;
+		}
 	}
 
 	void GetInputs()
@@ -102,8 +123,7 @@ public class ChangingGears2 : MonoBehaviour
 
 	void HandlePanels()
 	{
-		// Handle gear problem panel (stalling)
-		bool shouldShowGearProblem = currentGear != '0' &&
+		bool shouldShowGearProblem = carController.Gear != 0 &&
 								   carController.Speed <= 5f &&
 								   clutchInput < 0.2f &&
 								   !Input.GetKey(KeyCode.LeftShift);
@@ -111,7 +131,6 @@ public class ChangingGears2 : MonoBehaviour
 		panelProblem.SetActive(shouldShowGearProblem);
 		Time.timeScale = shouldShowGearProblem ? 0f : 1f;
 
-		// Handle speed problem panel
 		if (speedNotEnough && !showingSpeedPanel)
 		{
 			showingSpeedPanel = true;
@@ -119,7 +138,6 @@ public class ChangingGears2 : MonoBehaviour
 			Time.timeScale = 0f;
 		}
 
-		// Check for accelerator input to dismiss speed panel
 		if (showingSpeedPanel && (acceleratorInput > 0.1f || Input.GetKeyDown(KeyCode.UpArrow)))
 		{
 			speedNotEnough = false;
@@ -134,19 +152,72 @@ public class ChangingGears2 : MonoBehaviour
 		switch (currentStep)
 		{
 			case StepState.Step1:
-				HandleStep1();
+				if (clutchInput > 0.5f || Input.GetKey(KeyCode.LeftShift))
+				{
+					textMeshProUGUI.text = "Превключете на първа скорост.";
+					currentStep = StepState.Step2;
+				}
 				break;
 
 			case StepState.Step2:
-				HandleStep2();
+				if ((carController.Gear == 1 || Input.GetKeyDown(KeyCode.Alpha1)) && Time.timeScale != 0f)
+				{
+					textMeshProUGUI.text = $"Наберете скорост ({minSpeedForSecondGear}км) и сменете на втора скорост.";
+					currentStep = StepState.Step3;
+				}
 				break;
 
 			case StepState.Step3:
-				HandleStep3();
+				if ((clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift)) &&
+					(carController.Gear == 2 || Input.GetKeyDown(KeyCode.Alpha2)))
+				{
+					if (carController.Speed >= minSpeedForSecondGear)
+					{
+						textMeshProUGUI.text = $"Наберете скорост ({minSpeedForThirdGear}км) и сменете на трета скорост.";
+						currentStep = StepState.Step4;
+					}
+					else speedNotEnough = true;
+				}
 				break;
 
 			case StepState.Step4:
-				HandleStep4();
+				if ((clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift)) &&
+					(carController.Gear == 3 || Input.GetKeyDown(KeyCode.Alpha3)))
+				{
+					if (carController.Speed >= minSpeedForThirdGear)
+					{
+						textMeshProUGUI.text = $"Наберете скорост ({minSpeedForFourthGear}км) и сменете на четвърта скорост.";
+						currentStep = StepState.Step5;
+					}
+					else speedNotEnough = true;
+				}
+				break;
+
+			case StepState.Step5:
+				if ((clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift)) &&
+					(carController.Gear == 4 || Input.GetKeyDown(KeyCode.Alpha4)))
+				{
+					if (carController.Speed >= minSpeedForFourthGear)
+					{
+						textMeshProUGUI.text = $"Наберете скорост ({minSpeedForFifthGear}км) и сменете на пета скорост.";
+						currentStep = StepState.Step6;
+					}
+					else speedNotEnough = true;
+				}
+				break;
+
+			case StepState.Step6:
+				if ((clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift)) &&
+					(carController.Gear == 5 || Input.GetKeyDown(KeyCode.Alpha5)))
+				{
+					if (carController.Speed >= minSpeedForFourthGear)
+					{
+						textMeshProUGUI.text = "Задръжте пета скорост за 3 секунди.";
+						currentStep = StepState.Step7;
+						StartCoroutine(HandleStep7());
+					}
+					else speedNotEnough = true;
+				}
 				break;
 
 			case StepState.Completed:
@@ -155,65 +226,22 @@ public class ChangingGears2 : MonoBehaviour
 		}
 	}
 
-	void HandleStep1()
+	IEnumerator HandleStep7()
 	{
-		if (clutchInput > 0.5f || Input.GetKey(KeyCode.LeftShift))
-		{
-			textMeshProUGUI.text = "Превключете на първа скорост.";
-			currentStep = StepState.Step2;
-		}
-		else
-		{
-			textMeshProUGUI.text = "Натиснете съединителя до долу.";
-		}
-	}
+		float timer = 0f;
 
-	void HandleStep2()
-	{
-		if ((carController.Gear == 1 || Input.GetKeyDown(KeyCode.Alpha1)) && Time.timeScale != 0f)
+		while (timer < 3f)
 		{
-			currentGear = '1';
-			textMeshProUGUI.text = $"Наберете скорост ({minSpeedForSecondGear}км) и сменете на втора скорост.";
-			currentStep = StepState.Step3;
-		}
-	}
-
-	void HandleStep3()
-	{
-		if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
-		{
-			if (carController.Gear == 2 || Input.GetKeyDown(KeyCode.Alpha2))
+			if (carController.Gear != 5)
 			{
-				if (carController.Speed >= minSpeedForSecondGear)
-				{
-					currentGear = '2';
-					textMeshProUGUI.text = $"Наберете скорост ({minSpeedForThirdGear}км) и сменете на трета скорост.";
-					currentStep = StepState.Step4;
-				}
-				else
-				{
-					speedNotEnough = true;
-				}
+				textMeshProUGUI.text = "Трябва да задържите пета скорост!";
+				yield break;
 			}
+			timer += Time.deltaTime;
+			yield return null;
 		}
-	}
 
-	void HandleStep4()
-	{
-		if (clutchInput > 0.8f || Input.GetKey(KeyCode.LeftShift))
-		{
-			if (carController.Gear == 3 || Input.GetKeyDown(KeyCode.Alpha3))
-			{
-				if (carController.Speed >= minSpeedForThirdGear)
-				{
-					currentStep = StepState.Completed;
-				}
-				else
-				{
-					speedNotEnough = true;
-				}
-			}
-		}
+		currentStep = StepState.Completed;
 	}
 
 	void CompleteLevel()
@@ -237,4 +265,12 @@ public class ChangingGears2 : MonoBehaviour
 		Time.timeScale = 1f;
 		SceneManager.LoadScene("Drive Menu");
 	}
+
+	public void RestartLevel()
+	{
+		Time.timeScale = 1f;
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+	}
+
+	
 }
