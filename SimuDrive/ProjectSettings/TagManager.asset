@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - Obstacle
+  - BackCube
+  - LeftCube
+  - RightCube
   layers:
   - Default
   - TransparentFX

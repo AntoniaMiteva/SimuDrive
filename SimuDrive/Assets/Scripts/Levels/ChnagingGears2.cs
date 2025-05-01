@@ -12,7 +12,7 @@ public class ChangingGears2 : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI textMeshProUGUI;
 	[SerializeField] private GameObject panelProblem;
 	[SerializeField] private GameObject panelProblemSpeed;
-	[SerializeField] private GameObject panelProblem3; // Panel for obstacle collision
+	[SerializeField] private GameObject panelProblem3;
 	[SerializeField] private GameObject panelDone;
 	[SerializeField] private GameObject panelInstruction;
 	[SerializeField] private Button backButton;
@@ -51,7 +51,7 @@ public class ChangingGears2 : MonoBehaviour
 
 		panelProblem.SetActive(false);
 		panelProblemSpeed.SetActive(false);
-		panelProblem3.SetActive(false); // Initially hide the panel for obstacle collision
+		panelProblem3.SetActive(false); 
 		panelDone.SetActive(false);
 		panelInstruction.SetActive(true);
 

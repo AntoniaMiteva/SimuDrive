@@ -546,7 +546,13 @@ public class CarController : MonoBehaviour
 		return false;
 	}
 
+
+	//Collisions
 	public bool carCollided = false;
+	public bool carCubeBack = false;
+	public bool carCubeLeft = false;
+	public bool carCubeRight = false;
+
 	private void OnCollisionEnter(Collision collision)
 	{
 		Debug.Log("Collision with: " + collision.gameObject.name);
@@ -555,6 +561,21 @@ public class CarController : MonoBehaviour
 		{
 			Debug.Log("OBSTACLE HIT (Collision)!");
 			carCollided = true;
+		}
+
+		if (collision.gameObject.CompareTag("BackCube"))
+		{
+			carCubeBack = true;
+		}
+
+		if (collision.gameObject.CompareTag("LeftCube"))
+		{
+			carCubeLeft = true;
+		}
+
+		if (collision.gameObject.CompareTag("RightCube"))
+		{
+			carCubeRight = true;
 		}
 	}
 }
