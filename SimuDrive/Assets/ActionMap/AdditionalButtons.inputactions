@@ -1,0 +1,74 @@
+{
+    "name": "AdditionalButtons",
+    "maps": [
+        {
+            "name": "AdditionalButtons",
+            "id": "642aa93b-e6bc-458c-ba45-1f83daf79016",
+            "actions": [
+                {
+                    "name": "manualBrake",
+                    "type": "Button",
+                    "id": "2b856517-da76-4f14-b955-0d8203fc3f05",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "leftBlinker",
+                    "type": "Button",
+                    "id": "a960150d-3404-4ecd-b624-0f3fe37df721",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "rightBlinker",
+                    "type": "Button",
+                    "id": "046c5f55-28b3-42ca-898a-3308a3fbae1d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "62e92b2a-6c32-41c0-9683-2723d16e0ed0",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "manualBrake",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "73d54af2-ce41-48d3-b667-8ab727343139",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "leftBlinker",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2e1a09e7-03ff-45b2-bece-758b7bd70038",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "rightBlinker",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

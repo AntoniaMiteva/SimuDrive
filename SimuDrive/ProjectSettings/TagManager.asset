@@ -8,6 +8,9 @@ TagManager:
   - BackCube
   - LeftCube
   - RightCube
+  - AnotherCar
+  - BlinkChecker
+  - EndOfTheRoad
   layers:
   - Default
   - TransparentFX
