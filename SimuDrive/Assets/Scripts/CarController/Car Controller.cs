@@ -176,6 +176,7 @@ public class CarController : MonoBehaviour
 			else if (gear4Action.triggered || Input.GetKeyDown(KeyCode.Alpha4)) gear = 4;
 			else if (gear5Action.triggered || Input.GetKeyDown(KeyCode.Alpha5)) gear = 5;
 			else if (gearRAction.triggered || Input.GetKeyDown(KeyCode.R)) gear = -1;
+			else if (Input.GetKeyDown(KeyCode.Alpha0)) gear = 0;
 
 			//Debug.Log("Gear changed to: " + gear);
 		}
