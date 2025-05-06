@@ -212,7 +212,7 @@ public class CarController : MonoBehaviour
 		{
 			case 1:
 				if (speed <= gearSpeedLimits[1])
-					motorForce = 5000;
+					motorForce = 3000;
 				else
 					motorForce = 0;
 				break;
@@ -515,6 +515,9 @@ public class CarController : MonoBehaviour
 	public bool carCubeRight = false;
 	public bool carBlinkChecker = false;
 	public bool carEndOfTheRoad = false;
+	public bool carStopSign = false;
+	public bool carDidntStopSign = false;
+	public bool carFinishLevel = false;
 
 	void OnTriggerEnter(Collider other)
 	{
@@ -546,6 +549,21 @@ public class CarController : MonoBehaviour
 		if (other.gameObject.CompareTag("EndOfTheRoad"))
 		{
 			carEndOfTheRoad = true;
+		}
+
+		if (other.gameObject.CompareTag("StopSignCube"))
+		{
+			carStopSign = true;
+		}
+
+		if (other.gameObject.CompareTag("DidntStopCube"))
+		{
+			carDidntStopSign = true;
+		}
+
+		if (other.gameObject.CompareTag("CubeFinishLevel"))
+		{
+			carFinishLevel = true;
 		}
 	}
 

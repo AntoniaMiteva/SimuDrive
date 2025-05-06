@@ -286,7 +286,7 @@ Transform:
   m_GameObject: {fileID: 18773136}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -12.3, y: -18.65, z: 55.1}
+  m_LocalPosition: {x: -12.3, y: -18.65, z: -184.9}
   m_LocalScale: {x: 6.292474, y: 1, z: 64.885414}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1072,7 +1072,7 @@ Transform:
   m_GameObject: {fileID: 677974060}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -24.1, y: -18.65, z: 29.66}
+  m_LocalPosition: {x: -24.1, y: -18.65, z: -210.34}
   m_LocalScale: {x: 14.553304, y: 1, z: 1.3621229}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1108,7 +1108,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4352964966052378, guid: 8258fdccd226b584b8dc1c7ac1652db0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 15.05
+      value: -224.95
       objectReference: {fileID: 0}
     - target: {fileID: 4352964966052378, guid: 8258fdccd226b584b8dc1c7ac1652db0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1864,7 +1864,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4352964966052378, guid: 8258fdccd226b584b8dc1c7ac1652db0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.1
+      value: -247.1
       objectReference: {fileID: 0}
     - target: {fileID: 4352964966052378, guid: 8258fdccd226b584b8dc1c7ac1652db0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2257,7 +2257,7 @@ Transform:
   m_GameObject: {fileID: 1275769897}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -14, y: -18.65, z: 1.1}
+  m_LocalPosition: {x: -14, y: -18.65, z: -238.9}
   m_LocalScale: {x: 14.033286, y: 1, z: 0.9688828}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2752,6 +2752,8 @@ MonoBehaviour:
   carCubeBack: 0
   carCubeLeft: 0
   carCubeRight: 0
+  carBlinkChecker: 0
+  carEndOfTheRoad: 0
 --- !u!54 &1558105939 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 6537917312291431557, guid: 8258fdccd226b584b8dc1c7ac1652db0, type: 3}
@@ -3185,7 +3187,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
   m_sharedMaterial: {fileID: -2937116658433709983, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: -2937116658433709983, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -3915,11 +3918,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1155573268}
-  - {fileID: 1796436777}
   - {fileID: 2066039106}
   - {fileID: 127544622}
   - {fileID: 125181926}
   - {fileID: 1048478438}
+  - {fileID: 1796436777}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

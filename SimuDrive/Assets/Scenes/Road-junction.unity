@@ -1523,6 +1523,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00d5d5b30ce4ea5448adf33ef34c474e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isStart: 0
+  isDrive: 0
   carRigidbody: {fileID: 1055767743}
   speed: 0
   motorForce: 0
@@ -1539,6 +1541,7 @@ MonoBehaviour:
   maxRPM: 7000
   minRPM: 1000
   inputActions: {fileID: -944628639613478452, guid: f1e671f33e66de340b5c5780cdfb1636, type: 3}
+  inputAdditionalActions: {fileID: 0}
   acceleratorSensitivity: 2
   isSteeringWheelConnected: 0
   gearSpeedLimits:
@@ -1548,8 +1551,16 @@ MonoBehaviour:
   - 60
   - 80
   - 100
-  slopeForce: 100
   isManualBrake: 0
+  isLeftBlinker: 0
+  isRightBlinker: 0
+  carObstacle: 0
+  carAnotherCar: 0
+  carCubeBack: 0
+  carCubeLeft: 0
+  carCubeRight: 0
+  carBlinkChecker: 0
+  carEndOfTheRoad: 0
 --- !u!1 &1196026849
 GameObject:
   m_ObjectHideFlags: 0
@@ -2297,7 +2308,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
   m_sharedMaterial: {fileID: -2937116658433709983, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: -2937116658433709983, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:

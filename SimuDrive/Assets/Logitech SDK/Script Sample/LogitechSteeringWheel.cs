@@ -15,7 +15,7 @@ namespace Logitech
         string[] activeForceAndEffect;
 
         // New flag to control panel visibility
-        private bool isPanelVisible = true;
+        private bool isPanelVisible = false;
 
         // Use this for initialization
         void Start()

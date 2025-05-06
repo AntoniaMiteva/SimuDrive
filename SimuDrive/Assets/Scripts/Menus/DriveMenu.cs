@@ -28,8 +28,23 @@ public class DriveMenu : MonoBehaviour
         SceneManager.LoadScene("Start-Up-3");
     }
 
-    public void ChamgeGears1()
-    {
-        SceneManager.LoadScene("ChangeGears-1");
-    }
+	public void ChangeGears1()
+	{
+		SceneManager.LoadScene("ChangeGears-1");
+	}
+
+	public void ChangeGears2()
+	{
+		SceneManager.LoadScene("ChangeGears-2");
+	}
+
+	public void Overtake1()
+	{
+		SceneManager.LoadScene("Overtake-1");
+	}
+
+	public void RoundAbout1()
+	{
+		SceneManager.LoadScene("Round-About-1");
+	}
 }

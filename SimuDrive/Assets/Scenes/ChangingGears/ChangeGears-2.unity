@@ -1643,6 +1643,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00d5d5b30ce4ea5448adf33ef34c474e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isStart: 0
+  isDrive: 0
   carRigidbody: {fileID: 1558105939}
   speed: 0
   motorForce: 0
@@ -1672,10 +1674,13 @@ MonoBehaviour:
   isManualBrake: 0
   isLeftBlinker: 0
   isRightBlinker: 0
-  carCollided: 0
+  carObstacle: 0
+  carAnotherCar: 0
   carCubeBack: 0
   carCubeLeft: 0
   carCubeRight: 0
+  carBlinkChecker: 0
+  carEndOfTheRoad: 0
 --- !u!54 &1558105939 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 6537917312291431557, guid: 8258fdccd226b584b8dc1c7ac1652db0, type: 3}
@@ -2245,7 +2250,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
   m_sharedMaterial: {fileID: -2937116658433709983, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: -2937116658433709983, guid: 5b63841f367d51e4d9ccfcc351b34dac, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -2658,10 +2664,6 @@ MonoBehaviour:
   panelInstruction: {fileID: 1155573265}
   backButton: {fileID: 1371094283}
   restartButton: {fileID: 743380473}
-  minSpeedForSecondGear: 10
-  minSpeedForThirdGear: 30
-  minSpeedForFourthGear: 50
-  minSpeedForFifthGear: 70
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

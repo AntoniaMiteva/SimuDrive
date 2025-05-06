@@ -11,6 +11,9 @@ TagManager:
   - AnotherCar
   - BlinkChecker
   - EndOfTheRoad
+  - StopSignCube
+  - DidntStopCube
+  - CubeFinishLevel
   layers:
   - Default
   - TransparentFX

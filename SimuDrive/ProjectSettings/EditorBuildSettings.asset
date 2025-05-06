@@ -38,6 +38,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Start-Up/Start-Up-3.unity
     guid: 7ca6ca2444948904ea0e06bb2b8370c9
+  - enabled: 1
+    path: Assets/Scenes/ChangingGears/ChangeGears-2.unity
+    guid: 3b2d732b9d5a3d34da08ed8a950eb5d0
+  - enabled: 1
+    path: Assets/Scenes/Overtake/Overtake-1.unity
+    guid: 75d26b38b75af134c8a1bd753a04a04b
+  - enabled: 1
+    path: Assets/Round-about-1.unity
+    guid: 2172908e315cfb544b92e02cdba665f0
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 82dcbd6690e19324086f4245444d021d, type: 3}
   m_UseUCBPForAssetBundles: 0
