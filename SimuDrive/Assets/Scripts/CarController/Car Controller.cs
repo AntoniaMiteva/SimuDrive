@@ -510,6 +510,7 @@ public class CarController : MonoBehaviour
 	//Collisions
 	public bool carObstacle = false;
 	public bool carAnotherCar = false;
+	public bool carCubeFront = false;
 	public bool carCubeBack = false;
 	public bool carCubeLeft = false;
 	public bool carCubeRight = false;
@@ -521,6 +522,11 @@ public class CarController : MonoBehaviour
 
 	void OnTriggerEnter(Collider other)
 	{
+		if (other.gameObject.CompareTag("FrontCube"))
+		{
+			carCubeFront = true;
+		}
+
 		if (other.gameObject.CompareTag("BackCube"))
 		{
 			carCubeBack = true;
