@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Unity.VisualScripting;
 
 public class Overtake : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class Overtake : MonoBehaviour
 	private bool cubeBack = false;
 	private bool cubeLeft = false;
 	private bool cubeRight = false;
+
+	public static bool isStart = false;
 
 	public static bool carOutsideTheRoad = false;
 
@@ -137,6 +140,7 @@ public class Overtake : MonoBehaviour
 				if (carController.Speed>5)
 				{
 					textMeshProUGUI.text = "Настигнете автомобила пред вас.";
+					isStart = true;
 					currentStep = StepState.Step2;
 				}
 				else
@@ -155,7 +159,7 @@ public class Overtake : MonoBehaviour
 			case StepState.Step3:
 				if (cubeBack && carController.isLeftBlinker==true)
 				{
-					textMeshProUGUI.text = "Проверете страничното си огледало. Ако не виждате зад вас превозно средство, което ще предприеме изпреварване, отсрещната лента е свободна и линията между платната е прекъсната, преминете в лявата лента на платното.";
+					textMeshProUGUI.text = "Ако в отсрещната лента не виждате автомобил и маркировката между платната е прекъсната, преминете в лявата лента на платното.";
 					currentStep = StepState.Step4;
 				}
 				break;

@@ -10,7 +10,7 @@ public class EndlessRoadScript : MonoBehaviour
 	private Transform playerCarTransform;
 	private WaitForSeconds waitFor100ms = new WaitForSeconds(0.1f);
 
-	private const float sectionLength = 26f;
+	private const float sectionLength = 196.7f;
 	private int poolSize = 20;
 	private int sectionsOnScreen = 10;
 

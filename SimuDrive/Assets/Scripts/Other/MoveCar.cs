@@ -14,7 +14,7 @@ public class MoveCar : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if (!Overtake.carOutsideTheRoad && (/*overtake do it the same*/ RoadJunctionSecondRoad.isCarStart || RoadJunctionNoControl.carLevelStart))
+		if (!Overtake.carOutsideTheRoad && (Overtake.isStart || Overtake2.isStart || RoadJunctionSecondRoad.isCarStart || RoadJunctionNoControl.carLevelStart))
 			rb.MovePosition(rb.position + transform.forward * speed * Time.fixedDeltaTime);
 	}
 
