@@ -16,6 +16,7 @@ TagManager:
   - CubeFinishLevel
   - FrontCube
   - AnotherCarCube
+  - BlinkChecker2
   layers:
   - Default
   - TransparentFX

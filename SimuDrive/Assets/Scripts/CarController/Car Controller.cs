@@ -516,6 +516,7 @@ public class CarController : MonoBehaviour
 	public bool carCubeLeft = false;
 	public bool carCubeRight = false;
 	public bool carBlinkChecker = false;
+	public bool carBlinkChecker2 = false;
 	public bool carEndOfTheRoad = false;
 	public bool carStopSign = false;
 	public bool carDidntStopSign = false;
@@ -551,6 +552,11 @@ public class CarController : MonoBehaviour
 		if (other.gameObject.CompareTag("BlinkChecker"))
 		{
 			carBlinkChecker = true;
+		}
+
+		if (other.gameObject.CompareTag("BlinkChecker2"))
+		{
+			carBlinkChecker2 = true;
 		}
 
 		if (other.gameObject.CompareTag("EndOfTheRoad"))
