@@ -15,6 +15,7 @@ TagManager:
   - DidntStopCube
   - CubeFinishLevel
   - FrontCube
+  - AnotherCarCube
   layers:
   - Default
   - TransparentFX

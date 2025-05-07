@@ -14,9 +14,17 @@ public class MoveCar : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if (!Overtake.carOutsideTheRoad && (/*overtake do it the same*/ RoadJunctionSecondRoad.isCarStart))
+		if (!Overtake.carOutsideTheRoad && (/*overtake do it the same*/ RoadJunctionSecondRoad.isCarStart || RoadJunctionNoControl.carLevelStart))
 			rb.MovePosition(rb.position + transform.forward * speed * Time.fixedDeltaTime);
 	}
 
+	public int carCubeCheck = 0;
 
+	void OnTriggerEnter(Collider other)
+	{
+		if (other.gameObject.CompareTag("AnotherCarCube"))
+		{
+			carCubeCheck++;
+		}
+	}
 }
