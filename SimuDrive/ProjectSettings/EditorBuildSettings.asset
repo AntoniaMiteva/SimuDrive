@@ -44,9 +44,57 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Overtake/Overtake-1.unity
     guid: 75d26b38b75af134c8a1bd753a04a04b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Round-about-1.unity
     guid: 2172908e315cfb544b92e02cdba665f0
+  - enabled: 1
+    path: Assets/Scenes/Overtake/Overtake-2.unity
+    guid: b19efaa3cd18e294fbc67b6fbef8e2be
+  - enabled: 1
+    path: Assets/Scenes/FreeDriving/PolygonFreeDriving.unity
+    guid: dcd3b6618eb3d0149ab299258ecb57c4
+  - enabled: 1
+    path: Assets/Scenes/OutOfCity/OutOfCity.unity
+    guid: 5fd605d5b96e4524ba16a15f3158e29b
+  - enabled: 1
+    path: Assets/Scenes/OutOfCity/OutOfCity2.unity
+    guid: acbd9ef2ddb307b4da327a019aa0a1fb
+  - enabled: 1
+    path: Assets/Scenes/Parking/Parking1.unity
+    guid: 9312f63e65afeb04190869b626762f3d
+  - enabled: 1
+    path: Assets/Scenes/Parking/Parking2.unity
+    guid: 4b68a44b63335874b8d2e46e3386e969
+  - enabled: 1
+    path: Assets/Scenes/RoadJunction/NoControl/RoadJunctionTrafficNoControl.unity
+    guid: c5cd2e315956d1f439067c4077e69d1d
+  - enabled: 1
+    path: Assets/Scenes/RoadJunction/Signs/RoadJunctionMainRoad.unity
+    guid: 92fa8d27564786144bda8e8dd646c76b
+  - enabled: 1
+    path: Assets/Scenes/RoadJunction/Signs/RoadJunctionSecondRoad.unity
+    guid: 3cad9200002baba4db674469f446ec51
+  - enabled: 1
+    path: Assets/Scenes/RoadJunction/Signs/RoadJunctionStop.unity
+    guid: 0c494dbd5c54c314f9c0750bb59f8d2b
+  - enabled: 1
+    path: Assets/Scenes/RoadJunction/TrafficLight/RoadJunctionTrafficLight.unity
+    guid: 11ba8025e199e6b4197e0bb3515bb463
+  - enabled: 1
+    path: Assets/Scenes/Round-About/Round-about-1.unity
+    guid: fd7ced6b7aaf154439d4430dc04f22e5
+  - enabled: 1
+    path: Assets/Scenes/Round-About/Round-about-2.unity
+    guid: 896b6531d4b7d1a4286adf86b075fd59
+  - enabled: 1
+    path: Assets/Scenes/Round-About/Round-about-3.unity
+    guid: a7a63d9767f4ca54f946f20c4a736cf3
+  - enabled: 1
+    path: Assets/Scenes/Round-About/Round-about-4.unity
+    guid: 6cf8fb03d3cecbf449eb530e27dbd4b1
+  - enabled: 1
+    path: Assets/FreeDriveInCity.unity
+    guid: 11ee3445499d8da41afddafeb128ac94
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 82dcbd6690e19324086f4245444d021d, type: 3}
   m_UseUCBPForAssetBundles: 0
