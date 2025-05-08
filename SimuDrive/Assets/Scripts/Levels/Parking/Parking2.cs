@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Parking1 : MonoBehaviour
+public class Parking2 : MonoBehaviour
 {
     [SerializeField] private CarController carController;
     [SerializeField] private TextMeshProUGUI textMeshProUGUI;
@@ -16,13 +16,14 @@ public class Parking1 : MonoBehaviour
 	[SerializeField] private Button quitButton;
 	[SerializeField] private GameObject panelQuit;
 	[SerializeField] private Button restartButton;
+    [SerializeField] private GameObject endChecker;
 
 	private float clutchInput;
     private float acceleratorInput;
     private float previousClutchInput;
     private bool levelCompleted = false;
 
-    private enum StepState { Step0, Step1, Step2, Step3, Step4, Step5, Step6, Completed }
+    private enum StepState { Step0, Step1, Step2, Step3, Step4, Step5, Step6, Step7, Completed }
     private StepState currentStep = StepState.Step0;
 
     void Start()
@@ -38,9 +39,10 @@ public class Parking1 : MonoBehaviour
 		SetupRestartButton();
 
 		textMeshProUGUI.text = "Пусни аварийните светлини.";
+		endChecker.SetActive(false);
 
-        // Check if EventSystem exists
-        if (FindObjectOfType<EventSystem>() == null)
+		// Check if EventSystem exists
+		if (FindObjectOfType<EventSystem>() == null)
         {
             GameObject eventSystem = new GameObject("EventSystem");
             eventSystem.AddComponent<EventSystem>();
@@ -123,7 +125,7 @@ public class Parking1 : MonoBehaviour
 			case StepState.Step0:
 				if (carController.isEmergency)
                 {
-					textMeshProUGUI.text = "Трябва да паркираш между черния и белия автомобил от дясната ти страна. Включи на първа скорост.";
+					textMeshProUGUI.text = "Трябва да паркираш между черния и червения автомобил от дясната ти страна. Включи на първа скорост.";
 					currentStep = StepState.Step1;
 				}
 				else
@@ -135,7 +137,7 @@ public class Parking1 : MonoBehaviour
 			case StepState.Step1:
 				if ((carController.Gear == 1 || Input.GetKeyDown(KeyCode.Alpha1)) && Time.timeScale != 0f)
 				{
-					textMeshProUGUI.text = "Изтегли бавно колата напред, докато рамото ти се изравни центъра на жълтия автомобил.";
+					textMeshProUGUI.text = "Изтегли бавно колата напред, докато се изравниш с черния автомобил.";
 					currentStep = StepState.Step2;
                 }
 				break;
@@ -151,28 +153,37 @@ public class Parking1 : MonoBehaviour
             case StepState.Step3:
 				if ((carController.Gear == -1 || Input.GetKeyDown(KeyCode.R)) && Time.timeScale != 0f)
 				{
-					textMeshProUGUI.text = "Завъртете волана до край надясно и започнете леко да давате назад, докато станете успоредни с другите автомобили.";
+					textMeshProUGUI.text = "Завъртете волана до край надясно и започнете леко да давате назад, докато си на 45 градуса спрямо автомобилите.";
 					currentStep = StepState.Step4;
 				}
 				break;
 
-            case StepState.Step4:
-				if (carController.Rotation < 0f)
+			case StepState.Step4:
+				if (carController.Rotation < 45f)
 				{
-					textMeshProUGUI.text = "Изправете волана и дайте бавно и внивателно назад.";
+					textMeshProUGUI.text = "Завъртете волана до край наляво и започнете леко да давате назад, докато не станете успоедни с другите автомобили.";
 					currentStep = StepState.Step5;
 				}
 				break;
 
 			case StepState.Step5:
-				if (carController.carParkChecker2)
+				if (carController.Rotation > 85f)
 				{
-					textMeshProUGUI.text = "Спрете автомобила.";
+					endChecker.SetActive(true);
+					textMeshProUGUI.text = "Дайте бавно и внимателно напред, докато застанете на равно разстояние от двата автомобила.";
 					currentStep = StepState.Step6;
 				}
 				break;
 
 			case StepState.Step6:
+				if (carController.carParkChecker2)
+				{
+					textMeshProUGUI.text = "Спрете автомобила.";
+					currentStep = StepState.Step7;
+				}
+				break;
+
+			case StepState.Step7:
 				if (carController.Speed<1f)
 				{
 					textMeshProUGUI.text = "Успешно паркирахте.";
