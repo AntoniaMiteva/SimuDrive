@@ -55,6 +55,7 @@ public class CarController : MonoBehaviour
 	private InputAction manualBrake;
 	private InputAction leftBlinker;
 	private InputAction rightBlinker;
+	private InputAction emergency;
 	private InputAction lookLeft;
 	private InputAction lookRight;
 
@@ -71,13 +72,26 @@ public class CarController : MonoBehaviour
 	public bool isManualBrake = false;
 	public bool isLeftBlinker = false;
 	public bool isRightBlinker = false;
+	public bool isEmergency = false;
 	public bool isLookLeft = false;
 	public bool isLookRight = false;
 
 
+	public Transform cameraTransform;
 
 
-	public Transform cameraTransform;      
+	public float Rotation
+	{
+		get
+		{
+			float yRot = transform.eulerAngles.y;
+			if (yRot > 180f) yRot -= 360f;
+			return yRot;
+		}
+	}
+
+
+
 
 	private void Awake()
 	{
@@ -114,6 +128,7 @@ public class CarController : MonoBehaviour
 		rightBlinker = additionalButtonsMap.FindAction("rightBlinker");
 		lookLeft = additionalButtonsMap.FindAction("lookLeft");
 		lookRight = additionalButtonsMap.FindAction("lookRight");
+		emergency = additionalButtonsMap.FindAction("emergencyBlinkers");
 
 		if (gear1Action == null || gear2Action == null || gear3Action == null ||
 			gear4Action == null || gear5Action == null || gearRAction == null)
@@ -134,6 +149,7 @@ public class CarController : MonoBehaviour
 		rightBlinker.Enable();
 		lookLeft.Enable();
 		lookRight.Enable();
+		emergency.Enable();
 
 		Debug.Log("Actions enabled successfully!");
 	}
@@ -165,7 +181,6 @@ public class CarController : MonoBehaviour
 	private void FixedUpdate()
 	{
 		GetInput();
-		//UpdateGear(); // Update gear first
 		IsStarting(); // Check if the car should start
 		IsDriving();  // Check if the car should continue driving
 		HandleMotor(); // Apply motor force based on inputs
@@ -219,19 +234,23 @@ public class CarController : MonoBehaviour
 		{
 			isRightBlinker = !isRightBlinker;
 		}
+		if (Input.GetKeyDown(KeyCode.W) || emergency.triggered)
+		{
+			isEmergency = !isEmergency;
+		}
 
 		//Looking around input
 		if ((Input.GetKey(KeyCode.Z) || lookLeft.triggered) && cameraTransform != null)
 		{
-			cameraTransform.localRotation = Quaternion.Euler(0, -40, 0);
+			cameraTransform.localRotation = Quaternion.Euler(3.73f, -40, 0);
 		}
 		else if ((Input.GetKey(KeyCode.C) || lookRight.triggered) && cameraTransform != null)
 		{
-			cameraTransform.localRotation = Quaternion.Euler(0, 40, 0); // Example angle
+			cameraTransform.localRotation = Quaternion.Euler(3.73f, 40, 0); // Example angle
 		}
 		else
 		{
-			cameraTransform.localRotation = Quaternion.Euler(0, 0, 0);
+			cameraTransform.localRotation = Quaternion.Euler(3.73f, 3.17f, 0);
 
 		}
 
@@ -332,48 +351,7 @@ public class CarController : MonoBehaviour
 		}
 	}
 
-	private void UpdateGear()
-	{
-		if (isGear) // Clutch must be pressed to change gear
-		{
-			if (gear == 1 && speed <= gearSpeedLimits[1])
-			{
-				motorForce = 3000;
-			}
-			else if (gear == 2 && speed >= 10f && speed <= gearSpeedLimits[2])
-			{
-				motorForce = 5000;
-			}
-			else if (gear == 3 && speed >= 40f && speed <= gearSpeedLimits[3])
-			{
-				motorForce = 7000;
-			}
-			else if (gear == 4 && speed >= 60f && speed <= gearSpeedLimits[4])
-			{
-				motorForce = 9000;
-			}
-			else if (gear == 5 && speed >= 80f && speed <= gearSpeedLimits[5])
-			{
-				motorForce = 15000;
-			}
-			else if (gear == -1 && speed <= 5f)
-			{
-				motorForce = -3000;
-			}
-			else
-			{
-				gear = 0; // Gear is 0 when no gear is engaged
-				motorForce = 0; // No motor force when in neutral
-			}
-
-			// Enforce speed limits
-			if (gear > 0 && gear < gearSpeedLimits.Length && speed > gearSpeedLimits[gear])
-			{
-				motorForce = 0; // Stop applying force if speed exceeds the limit
-			}
-		}
-	}
-
+	
 	private void CalculateRPM()
 	{
 		if (gear > 0 && gear < gearSpeedLimits.Length)
@@ -548,6 +526,8 @@ public class CarController : MonoBehaviour
 	public bool carStopSign = false;
 	public bool carDidntStopSign = false;
 	public bool carFinishLevel = false;
+	public bool carParkChecker1 = false;
+	public bool carParkChecker2 = false;
 
 	void OnTriggerEnter(Collider other)
 	{
@@ -604,6 +584,16 @@ public class CarController : MonoBehaviour
 		if (other.gameObject.CompareTag("CubeFinishLevel"))
 		{
 			carFinishLevel = true;
+		}
+
+		if (other.gameObject.CompareTag("ParkChecker1"))
+		{
+			carParkChecker1 = true;
+		}
+
+		if (other.gameObject.CompareTag("ParkChecker2"))
+		{
+			carParkChecker2 = true;
 		}
 	}
 

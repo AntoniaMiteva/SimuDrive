@@ -291,10 +291,6 @@ public class RoundAbout1 : MonoBehaviour
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 
-	public void StartAgain()
-	{
-		SceneManager.LoadScene("try2");
-	}
 
 	void SetupEventSystem()
 	{

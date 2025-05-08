@@ -58,6 +58,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "emergencyBlinkers",
+                    "type": "Button",
+                    "id": "66706d5c-e23d-4480-9c17-03ee74f380fc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -124,6 +133,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "lookUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "649df1eb-8433-4e31-9af7-ee59d6a96fa8",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "emergencyBlinkers",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

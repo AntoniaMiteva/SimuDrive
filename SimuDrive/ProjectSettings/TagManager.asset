@@ -17,6 +17,8 @@ TagManager:
   - FrontCube
   - AnotherCarCube
   - BlinkChecker2
+  - ParkChecker1
+  - ParkChecker2
   layers:
   - Default
   - TransparentFX
