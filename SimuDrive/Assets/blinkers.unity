@@ -3829,13 +3829,13 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1970482498}
+  - {fileID: 756389507}
   - {fileID: 1417524192}
   - {fileID: 1675234698}
   - {fileID: 1203218101}
   - {fileID: 1695607686}
   - {fileID: 535617158}
   - {fileID: 1272803687}
-  - {fileID: 756389507}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4062,9 +4062,10 @@ GameObject:
   - component: {fileID: 1442232264}
   - component: {fileID: 1442232266}
   - component: {fileID: 1442232265}
+  - component: {fileID: 1442232267}
   m_Layer: 5
   m_Name: Arrow
-  m_TagString: Untagged
+  m_TagString: needle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4076,13 +4077,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1442232263}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0.93200785, w: 0.3624381}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.56, y: 0.9072, z: 0.9072}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 756389507}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 137.5}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -4126,6 +4127,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1442232263}
   m_CullTransparentMesh: 1
+--- !u!114 &1442232267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442232263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf17edeb4d62d7144a90e3973b24a027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedArrow: {fileID: 1442232264}
+  maxSpeedLimit: 120
+  minAngle: 137.5
+  maxAngle: -137.5
+  carController: {fileID: 1194743498}
 --- !u!1001 &1483344051
 PrefabInstance:
   m_ObjectHideFlags: 0

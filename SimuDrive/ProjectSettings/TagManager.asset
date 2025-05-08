@@ -19,6 +19,7 @@ TagManager:
   - BlinkChecker2
   - ParkChecker1
   - ParkChecker2
+  - needle
   layers:
   - Default
   - TransparentFX
