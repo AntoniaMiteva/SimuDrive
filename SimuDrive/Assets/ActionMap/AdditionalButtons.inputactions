@@ -106,7 +106,7 @@
                 {
                     "name": "",
                     "id": "83fba2a3-3c88-4418-b7e2-6ca178cbf43d",
-                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button5",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button3",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -117,7 +117,7 @@
                 {
                     "name": "",
                     "id": "662d8c04-9b5d-4708-be08-01e2947285a9",
-                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button5",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button4",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -139,7 +139,7 @@
                 {
                     "name": "",
                     "id": "649df1eb-8433-4e31-9af7-ee59d6a96fa8",
-                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button5",
+                    "path": "<HID::Logitech G920 Driving Force Racing Wheel for Xbox One>/button11",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

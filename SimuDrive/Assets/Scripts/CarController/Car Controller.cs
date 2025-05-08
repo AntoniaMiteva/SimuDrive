@@ -286,11 +286,11 @@ public class CarController : MonoBehaviour
 		}
 
 		//Looking around input
-		if ((Input.GetKey(KeyCode.Z) || lookLeft.triggered) && cameraTransform != null)
+		if ((Input.GetKey(KeyCode.Z) || lookLeft.ReadValue<float>() > 0.5f) && cameraTransform != null)
 		{
 			cameraTransform.localRotation = Quaternion.Euler(3.73f, -40, 0);
 		}
-		else if ((Input.GetKey(KeyCode.C) || lookRight.triggered) && cameraTransform != null)
+		else if ((Input.GetKey(KeyCode.C) || lookRight.ReadValue<float>() > 0.5f) && cameraTransform != null)
 		{
 			cameraTransform.localRotation = Quaternion.Euler(3.73f, 40, 0); // Example angle
 		}
