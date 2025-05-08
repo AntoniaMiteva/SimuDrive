@@ -20,6 +20,8 @@ public class RoadJunctionSecondRoad : MonoBehaviour
 	[SerializeField] private Button restartButton;
 	[SerializeField] private Button restartButtonDidntStop;
 	[SerializeField] private Button restartButtonHitCar;
+	[SerializeField] private GameObject panelQuit;
+	[SerializeField] private Button quitButton;
 
 	private float clutchInput;
 	private float acceleratorInput;
@@ -134,6 +136,13 @@ public class RoadJunctionSecondRoad : MonoBehaviour
 		{
 			panelHitCar.SetActive(false);
 			Time.timeScale = 1f;
+		}
+
+		if (Input.GetKey(KeyCode.Escape))
+		{
+			panelQuit.SetActive(true);
+			panelDone.SetActive(false);
+			panelProblem.SetActive(false);
 		}
 	}
 

@@ -17,8 +17,10 @@ public class StartDrive3 : MonoBehaviour
     [SerializeField] private float maxWaitTime = 2f;
     [SerializeField] private float minMovementSpeed = 0.5f;
     [SerializeField] private float downhillForce = 500f;
+	[SerializeField] private GameObject panelQuit;
+	[SerializeField] private Button quitButton;
 
-    private float clutchInput;
+	private float clutchInput;
     private float brakeInput;
     private bool levelCompleted = false;
     private float timeSinceBrakeRelease;
@@ -176,7 +178,15 @@ public class StartDrive3 : MonoBehaviour
 
             ProcessSteps();
         }
-    }
+
+
+		if (Input.GetKey(KeyCode.Escape))
+		{
+			panelQuit.SetActive(true);
+			panelDone.SetActive(false);
+			panelProblem.SetActive(false);
+		}
+	}
 
     private void ProcessSteps()
     {

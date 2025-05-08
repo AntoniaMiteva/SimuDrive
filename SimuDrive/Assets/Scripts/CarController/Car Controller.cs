@@ -55,6 +55,8 @@ public class CarController : MonoBehaviour
 	private InputAction manualBrake;
 	private InputAction leftBlinker;
 	private InputAction rightBlinker;
+	private InputAction lookLeft;
+	private InputAction lookRight;
 
 	[SerializeField] private float acceleratorSensitivity = 2f; // Adjust this value to make the pedal more sensitive
 
@@ -69,7 +71,13 @@ public class CarController : MonoBehaviour
 	public bool isManualBrake = false;
 	public bool isLeftBlinker = false;
 	public bool isRightBlinker = false;
+	public bool isLookLeft = false;
+	public bool isLookRight = false;
 
+
+
+
+	public Transform cameraTransform;      
 
 	private void Awake()
 	{
@@ -104,6 +112,8 @@ public class CarController : MonoBehaviour
 		manualBrake = additionalButtonsMap.FindAction("manualBrake");
 		leftBlinker = additionalButtonsMap.FindAction("leftBlinker");
 		rightBlinker = additionalButtonsMap.FindAction("rightBlinker");
+		lookLeft = additionalButtonsMap.FindAction("lookLeft");
+		lookRight = additionalButtonsMap.FindAction("lookRight");
 
 		if (gear1Action == null || gear2Action == null || gear3Action == null ||
 			gear4Action == null || gear5Action == null || gearRAction == null)
@@ -122,6 +132,8 @@ public class CarController : MonoBehaviour
 		manualBrake.Enable();
 		leftBlinker.Enable();
 		rightBlinker.Enable();
+		lookLeft.Enable();
+		lookRight.Enable();
 
 		Debug.Log("Actions enabled successfully!");
 	}
@@ -206,6 +218,21 @@ public class CarController : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.E) || rightBlinker.triggered)
 		{
 			isRightBlinker = !isRightBlinker;
+		}
+
+		//Looking around input
+		if ((Input.GetKey(KeyCode.Z) || lookLeft.triggered) && cameraTransform != null)
+		{
+			cameraTransform.localRotation = Quaternion.Euler(0, -40, 0);
+		}
+		else if ((Input.GetKey(KeyCode.C) || lookRight.triggered) && cameraTransform != null)
+		{
+			cameraTransform.localRotation = Quaternion.Euler(0, 40, 0); // Example angle
+		}
+		else
+		{
+			cameraTransform.localRotation = Quaternion.Euler(0, 0, 0);
+
 		}
 
 		//Gears

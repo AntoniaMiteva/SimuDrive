@@ -17,6 +17,8 @@ public class Overtake : MonoBehaviour
 	[SerializeField] private Button backButton;
 	[SerializeField] private Button restartButton;
 	[SerializeField] private Button restartButtonAnotherCarPanel;
+	[SerializeField] private GameObject panelQuit;
+	[SerializeField] private Button quitButton;
 
 	private float clutchInput;
 	private float acceleratorInput;
@@ -86,6 +88,13 @@ public class Overtake : MonoBehaviour
 			}
 
 			ProcessSteps();
+
+			if (Input.GetKey(KeyCode.Escape))
+			{
+				panelQuit.SetActive(true);
+				panelDone.SetActive(false);
+				panelProblem.SetActive(false);
+			}
 		}
 
 		if (carController.carObstacle)

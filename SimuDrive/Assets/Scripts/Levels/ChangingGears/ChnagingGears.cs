@@ -15,9 +15,11 @@ public class ChangingGears : MonoBehaviour
     [SerializeField] private GameObject panelDone;
     [SerializeField] private GameObject panelInstruction;
     [SerializeField] private Button backButton;
+	[SerializeField] private GameObject panelQuit;
+	[SerializeField] private Button quitButton;
 
 
-    private float clutchInput;
+	private float clutchInput;
     private float acceleratorInput;
     private float previousClutchInput;
     private bool levelCompleted = false;
@@ -89,7 +91,15 @@ public class ChangingGears : MonoBehaviour
 
             ProcessSteps();
         }
-    }
+
+
+		if (Input.GetKey(KeyCode.Escape))
+		{
+			panelQuit.SetActive(true);
+			panelDone.SetActive(false);
+			panelProblem.SetActive(false);
+		}
+	}
 
     private void ProcessSteps()
     {

@@ -20,6 +20,8 @@ public class RoundAbout3 : MonoBehaviour
 	[SerializeField] private Button restartButton;
 	[SerializeField] private Button restartButtonNoBlinker;
 	[SerializeField] private Button restartButtonWrongBlinker;
+	[SerializeField] private GameObject panelQuit;
+	[SerializeField] private Button quitButton;
 
 	private float clutchInput;
 	private float acceleratorInput;
@@ -149,6 +151,13 @@ public class RoundAbout3 : MonoBehaviour
 		if (carController.carCubeRight)
 		{
 			cubeRight = true;
+		}
+
+		if (Input.GetKey(KeyCode.Escape))
+		{
+			panelQuit.SetActive(true);
+			panelDone.SetActive(false);
+			panelProblem.SetActive(false);
 		}
 	}
 

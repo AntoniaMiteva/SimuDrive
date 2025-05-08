@@ -16,8 +16,10 @@ public class StartDrive2 : MonoBehaviour
     [SerializeField] private Button backButton;
     [SerializeField] private float maxWaitTime = 2f;
     [SerializeField] private float minMovementSpeed = 0.5f;
+	[SerializeField] private GameObject panelQuit;
+	[SerializeField] private Button quitButton;
 
-    private float clutchInput;
+	private float clutchInput;
     private float acceleratorInput;
     private float brakeInput;
     private bool levelCompleted = false;
@@ -150,7 +152,14 @@ public class StartDrive2 : MonoBehaviour
 
             ProcessSteps();
         }
-    }
+
+		if (Input.GetKey(KeyCode.Escape))
+		{
+			panelQuit.SetActive(true);
+			panelDone.SetActive(false);
+			panelProblem.SetActive(false);
+		}
+	}
 
     private void ProcessSteps()
     {

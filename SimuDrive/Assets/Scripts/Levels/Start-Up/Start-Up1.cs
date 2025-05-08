@@ -11,9 +11,11 @@ public class StartDrive1 : MonoBehaviour
     [SerializeField] private GameObject panelProblem;
     [SerializeField] private GameObject panelDone;
     [SerializeField] private GameObject panelInstruction;
-    [SerializeField] private Button backButton; // Reference to your button
+    [SerializeField] private Button backButton;
+	[SerializeField] private GameObject panelQuit;
+	[SerializeField] private Button quitButton;
 
-    private float clutchInput;
+	private float clutchInput;
     private float acceleratorInput;
     private float previousClutchInput;
     private bool levelCompleted = false;
@@ -28,7 +30,8 @@ public class StartDrive1 : MonoBehaviour
 
         panelProblem.SetActive(false);
         panelDone.SetActive(false);
-        panelInstruction.SetActive(true);
+		panelQuit.SetActive(false);
+		panelInstruction.SetActive(true);
 
 
         textMeshProUGUI.text = "Натиснете съединителя до долу.";
@@ -85,7 +88,16 @@ public class StartDrive1 : MonoBehaviour
             ProcessSteps();
         }
 
-    }
+
+
+		if (Input.GetKey(KeyCode.Escape))
+		{
+            panelQuit.SetActive(true);
+            panelDone.SetActive(false);
+            panelProblem.SetActive(false);
+		}
+
+	}
 
     private void ProcessSteps()
     {
