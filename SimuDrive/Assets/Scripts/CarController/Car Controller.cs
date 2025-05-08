@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Unity.VisualStudio.Editor;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -40,6 +41,12 @@ public class CarController : MonoBehaviour
 
 	[SerializeField] private float maxRPM = 7000f;
 	[SerializeField] private float minRPM = 1000f;
+
+	[SerializeField] private GameObject leftBlinkerImageOn;
+	[SerializeField] private GameObject leftBlinkerImageOff;
+	[SerializeField] private GameObject rightBlinkerImageOn;
+	[SerializeField] private GameObject rightBlinkerImageOff;
+
 	private float currentRPM;
 
 
@@ -163,6 +170,11 @@ public class CarController : MonoBehaviour
 		ConfigureFriction(backRightWheelColider);
 		rb = GetComponent<Rigidbody>();
 		DetectSteeringWheel();
+
+		leftBlinkerImageOff.SetActive(true);
+		leftBlinkerImageOn.SetActive(false);
+		rightBlinkerImageOff.SetActive(true);
+		rightBlinkerImageOn.SetActive(false);
 	}
 	private void DetectSteeringWheel()
 	{
@@ -194,6 +206,8 @@ public class CarController : MonoBehaviour
 
 	private void Update()
 	{
+		leftBlinkerImageOff.SetActive(false);
+		leftBlinkerImageOn.SetActive(false);
 
 		if (isGear) // Only allow gear change when clutch is pressed
 		{
@@ -229,14 +243,46 @@ public class CarController : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Q) || leftBlinker.triggered)
 		{
 			isLeftBlinker = !isLeftBlinker;
+			if (isRightBlinker) isRightBlinker = false;
 		}
 		if (Input.GetKeyDown(KeyCode.E) || rightBlinker.triggered)
 		{
 			isRightBlinker = !isRightBlinker;
+			if (isLeftBlinker) isLeftBlinker = false;
+
 		}
 		if (Input.GetKeyDown(KeyCode.W) || emergency.triggered)
 		{
 			isEmergency = !isEmergency;
+		}
+
+		if (isLeftBlinker)
+		{
+			leftBlinkerImageOff.SetActive(false);
+			leftBlinkerImageOn.SetActive(true);
+			rightBlinkerImageOff.SetActive(true);
+			rightBlinkerImageOn.SetActive(false);
+		}
+		else if (isRightBlinker)
+		{
+			rightBlinkerImageOff.SetActive(false);
+			rightBlinkerImageOn.SetActive(true);
+			leftBlinkerImageOff.SetActive(true);
+			leftBlinkerImageOn.SetActive(false);
+		}
+		else if(isEmergency)
+		{
+			leftBlinkerImageOff.SetActive(false);
+			leftBlinkerImageOn.SetActive(true);
+			rightBlinkerImageOff.SetActive(false);
+			rightBlinkerImageOn.SetActive(true);
+		}
+		else
+		{
+			leftBlinkerImageOff.SetActive(true);
+			leftBlinkerImageOn.SetActive(false);
+			rightBlinkerImageOff.SetActive(true);
+			rightBlinkerImageOn.SetActive(false);
 		}
 
 		//Looking around input
@@ -303,10 +349,7 @@ public class CarController : MonoBehaviour
 				motorForce = 0;
 				break;
 		}
-	
-
-}
-
+	}
 
 
 	private void CalculateSpeed()

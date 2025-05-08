@@ -16,6 +16,8 @@ public class Parking1 : MonoBehaviour
 	[SerializeField] private Button quitButton;
 	[SerializeField] private GameObject panelQuit;
 	[SerializeField] private Button restartButton;
+	[SerializeField] private Button buttonAnotherCar;
+	[SerializeField] private GameObject panelAnotherCar;
 
 	private float clutchInput;
     private float acceleratorInput;
@@ -33,9 +35,11 @@ public class Parking1 : MonoBehaviour
         panelProblem.SetActive(false);
         panelDone.SetActive(false);
 		panelQuit.SetActive(false);
+        panelAnotherCar.SetActive(false);
 		panelInstruction.SetActive(true);
 
 		SetupRestartButton();
+        SetupRestartButtonAnotherCar();
 
 		textMeshProUGUI.text = "Пусни аварийните светлини.";
 
@@ -102,6 +106,20 @@ public class Parking1 : MonoBehaviour
 		else
 		{
 			panelProblemCollision.SetActive(false);
+			Time.timeScale = 1f;
+		}
+
+		if (carController.carAnotherCar)
+		{
+			panelAnotherCar.SetActive(true);
+			panelProblem.SetActive(false);
+			carController.speed = 0f;
+			carController.enabled = false;
+			Time.timeScale = 1f;
+		}
+		else
+		{
+			panelAnotherCar.SetActive(false);
 			Time.timeScale = 1f;
 		}
 
@@ -188,6 +206,14 @@ public class Parking1 : MonoBehaviour
 		{
 			restartButton.onClick.RemoveAllListeners();
 			restartButton.onClick.AddListener(RestartLevel);
+		}
+	}
+	void SetupRestartButtonAnotherCar()
+	{
+		if (restartButton != null)
+		{
+			buttonAnotherCar.onClick.RemoveAllListeners();
+			buttonAnotherCar.onClick.AddListener(RestartLevel);
 		}
 	}
 	public void RestartLevel()
